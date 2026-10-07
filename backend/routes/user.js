@@ -17,22 +17,28 @@ userRouters.post("/verify-user", async (req, res) => {
             })
         }
 
+        const user = await User.findOne({ email })
+
+        if (user) {
+            return res.status(404).json({
+                message: "user already registered"
+            })
+        }
+
         const otp = crypto.randomInt(100000, 1000000).toString();
 
         req.session.otp = otp;
         req.session.email = email;
 
-        // await Transporter.sendMail({
-        //     from: process.env.EMAIL_USER,
-        //     to: email,
-        //     subject: "Verifycation gmail",
-        //     text: `Your link ${verify.token}. This LINK is valid for 5 minutes.`
-        // })
+        await Transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Verifycation gmail",
+            text: `Your OTP ${otp}. This OTP is valid for 5 minutes.`
+        })
 
         res.json({
-            message: "Link send successfully",
-            email,
-            otp
+            message: "OTP send successfully",
         })
 
     } catch (error) {
@@ -46,10 +52,14 @@ userRouters.post("/verify-otp", async (req, res) => {
     try {
         const { otp } = req.body;
 
+        if (otp !== req.session.otp) {
+            res.json({
+                message: "Otp not match"
+            })
+        }
+
         res.json({
             message: "Success",
-            otp,
-            session: req.session
         })
     } catch (error) {
         res.json({
@@ -60,9 +70,11 @@ userRouters.post("/verify-otp", async (req, res) => {
 
 userRouters.post("/register", async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, password } = req.body;
 
-        if (!name || !email || !password || !role) {
+        console.log(req.session)
+
+        if (!name || !password) {
             return res.json({
                 message: "require all field"
             })
@@ -74,13 +86,7 @@ userRouters.post("/register", async (req, res) => {
             })
         }
 
-        if (role === "admin") {
-            return res.json({
-                message: "Select valid role"
-            })
-        }
-
-        const isUser = await User.findOne({ email });
+        const isUser = await User.findOne({ email: req.session.email });
 
         if (isUser) {
             return res.json({
@@ -90,16 +96,17 @@ userRouters.post("/register", async (req, res) => {
 
         const hash = await bcrypt.hash(password, 5);
 
-        const user = await User.create({
+        await User.create({
             name,
-            email,
+            email: req.session.email,
             password: hash,
-            role
         });
+
+        req.session.email = "";
+        req.session.otp = "";
 
         return res.json({
             message: "User register successfully",
-            user
         })
     } catch (error) {
         res.json({

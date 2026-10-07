@@ -11,8 +11,8 @@ export default function Navbar() {
                 </h1>
             </Link>
 
-            <button className="bg-white text-green-800 px-5 py-2 rounded-lg font-semibold hover:bg-green-100 transition duration-200 shadow-sm">
-                <Link to="/register">Register</Link>
+            <button className="bg-white text-green-800 px-5 py-2 rounded-lg font-semibold transition duration-200 shadow-sm">
+                <Link to="/login">Login</Link>
             </button>
 
         </div>

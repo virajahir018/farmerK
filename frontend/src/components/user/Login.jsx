@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React from 'react'
-import { useState } from 'react'
+import { useState } from 'react';
 
-export default function Register() {
-    const [name, setName] = useState();
+export default function Login() {
+    const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
     const handleSubmit = async (e) => {
@@ -30,10 +30,10 @@ export default function Register() {
             >
 
                 <input
-                    type="text"
-                    placeholder="Enter name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    type="email"
+                    placeholder="Enter email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-200"
                 />
 
@@ -49,7 +49,7 @@ export default function Register() {
                     type="submit"
                     className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition duration-200"
                 >
-                    Verify
+                    Login
                 </button>
 
             </form>

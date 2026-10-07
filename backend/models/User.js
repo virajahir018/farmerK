@@ -17,11 +17,11 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         required: true,
-        enum: ["consumer", "farmer", "admin"],
-        default: "consumer",
+        enum: ["user", "farmer", "admin"],
+        default: "user",
     },
-    location:{
-        
+    location: {
+
     }
 });
 
