@@ -1,24 +1,43 @@
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+export default function Login({ setIsLogin }) {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [data, setData] = useState({});
+    const navigate = useNavigate();
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const res = await axios.post("http://localhost:5000/user/register",
-                { name, password },
+            const res = await axios.post("http://localhost:5000/user/login",
+                { email, password },
                 { withCredentials: true }
             )
 
             console.log(res.data)
 
+            setData(res.data)
+
+
+            if (res.data.message === "Login successfully") {
+
+                setTimeout(() => {
+                    navigate("/")
+                }, 1000)
+
+                setIsLogin(true)
+            }
+
         } catch (error) {
             console.log(error.response?.data)
+            setData(error.response?.data)
         }
     }
     return (
@@ -28,7 +47,6 @@ export default function Login() {
                 onSubmit={handleSubmit}
                 className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg"
             >
-
                 <input
                     type="email"
                     placeholder="Enter email"
@@ -51,6 +69,15 @@ export default function Login() {
                 >
                     Login
                 </button>
+
+                {data?.message === "Login successfully" ?
+                    (
+                        <p className='text-center pt-3 text-green-700'>{data.message}</p>
+                    ) :
+                    (
+                        <p className='text-center pt-3 text-red-600'>{data.message}</p>
+                    )
+                }
 
             </form>
         </div>

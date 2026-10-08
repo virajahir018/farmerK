@@ -4,10 +4,10 @@ function GenerateToken(obj) {
     const token = jwt.sign(
         { obj },
         process.env.JWT_SECRET,
-        { expiresIn: "5m" }
+        { expiresIn: "15m" }
     )
-    
-    return {token};
+
+    return { token };
 }
 
 module.exports = GenerateToken;

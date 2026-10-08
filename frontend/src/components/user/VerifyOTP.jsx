@@ -26,7 +26,7 @@ export default function VerifyOTP() {
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className='w-full max-w-md bg-white p-8 rounded-2xl shadow-lg'>
                 <input
                     type="text"
                     name="otp"

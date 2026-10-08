@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const crypto = require("crypto");
 const Transporter = require("../utils/sendMail");
+const GenerateToken = require("../utils/token");
+const Auth = require("../middleware/Auth");
+const session = require("express-session");
 
 const userRouters = express.Router();
 
@@ -114,5 +117,57 @@ userRouters.post("/register", async (req, res) => {
         })
     }
 })
+
+userRouters.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.json({
+            message: "require all field"
+        })
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.json({
+            message: "User not find"
+        })
+    }
+
+    const compare = await bcrypt.compare(password, user.password)
+
+    if (!compare) {
+        return res.json({
+            message: "User not find"
+        })
+    }
+
+    const token = GenerateToken(email);
+
+    req.session.token = token.token
+
+    res.json({
+        message: "Login successfully",
+        token: req.session.token
+    })
+
+})
+
+userRouters.get("/profile", Auth, (req, res) => {
+
+    res.json({
+        message: "User profile"
+    })
+})
+
+userRouters.post("/logout", (req, res) => {
+
+    res.clearCookie("connect.sid");
+
+    res.json({
+        message: "Logout successfully"
+    });
+});
 
 module.exports = userRouters;
