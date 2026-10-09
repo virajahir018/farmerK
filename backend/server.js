@@ -26,7 +26,6 @@ app.use(session({
         sameSite: "lax",
         maxAge: 5 * 60 * 1000
     }
-
 }));
 
 app.use("/user", userRouters)

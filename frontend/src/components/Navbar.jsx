@@ -4,7 +4,7 @@ import { FaUser } from "react-icons/fa";
 
 export default function Navbar({ isLogin }) {
 
-    console.log(isLogin)
+    // console.log(isLogin)
     return (
         <div className="w-full h-16 bg-green-800 text-white flex items-center justify-between px-8 shadow-md">
 
@@ -22,9 +22,8 @@ export default function Navbar({ isLogin }) {
                 ) :
                 (
                     <Link to="/logout">
-                        <FaUser />
+                        <FaUser/>
                     </Link>
-
                 )
             }
 

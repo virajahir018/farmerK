@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login({ setIsLogin }) {
 
@@ -78,6 +78,8 @@ export default function Login({ setIsLogin }) {
                         <p className='text-center pt-3 text-red-600'>{data.message}</p>
                     )
                 }
+
+                <h1 className='text-center'>Not registered <Link to="/verify-user"><span className='text-green-600'>click here</span></Link> to register</h1>
 
             </form>
         </div>

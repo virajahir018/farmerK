@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
     const [name, setName] = useState();
     const [password, setPassword] = useState();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,6 +18,8 @@ export default function Register() {
             )
 
             console.log(res.data)
+
+            navigate("/login")
 
         } catch (error) {
             console.log(error.response?.data)
