@@ -159,20 +159,21 @@ userRouters.post("/login", async (req, res) => {
             });
         }
 
-        const token = GenerateToken({
-            id: user._id,
-            email: user.email
-        });
+        // const token = GenerateToken({
+        //     id: user._id,
+        //     email: user.email
+        // });
 
-        req.session.token = token.token;
+        req.session.userId = user._id;
 
         return res.json({
             message: "Login successfully",
+            session: req.session
         });
 
     } catch (error) {
         return res.status(500).json({
-            message: error.message
+            message: error.message,
         });
     }
 });

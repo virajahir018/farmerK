@@ -14,6 +14,12 @@ export default function Navbar({ isLogin }) {
                 </h1>
             </Link>
 
+            <Link to="/location">
+                <h1 className="text-2xl font-bold">
+                    Locatin
+                </h1>
+            </Link>
+
             {!isLogin ?
                 (
                     <button className="bg-white text-green-800 px-5 py-2 rounded-lg font-semibold transition duration-200 shadow-sm">
@@ -21,8 +27,8 @@ export default function Navbar({ isLogin }) {
                     </button>
                 ) :
                 (
-                    <Link to="/logout">
-                        <FaUser/>
+                    <Link to="/profile">
+                        <FaUser />
                     </Link>
                 )
             }

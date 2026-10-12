@@ -4,28 +4,31 @@ import AppRoutes from './routes/AppRoutes'
 import { useState } from 'react'
 import axios from 'axios';
 
-
 export default function App() {
 
   const [isLogin, setIsLogin] = useState(false);
 
-  async function fetchdata(){
+  async function fetchdata() {
 
-    let data= await axios.get("http://localhost:5000/user/profile",
+    let data = await axios.get("http://localhost:5000/user/profile",
+
       { withCredentials: true }
-    )
-    let res = await data.data
-if(data.message=="Login successfully"){
-  setIsLogin(true)
-}
 
-    console.log(res)
+    )
+
+    let res = await data.data
+
+
+    if (res.message == "User profile") {
+      setIsLogin(true)
+    }
+
   }
 
 
   useEffect(() => {
 
-fetchdata()
+    fetchdata()
 
   }, [])
 
