@@ -168,7 +168,6 @@ userRouters.post("/login", async (req, res) => {
 
         return res.json({
             message: "Login successfully",
-            session: req.session
         });
 
     } catch (error) {

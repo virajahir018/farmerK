@@ -4,7 +4,9 @@ const express = require("express");
 const connectMD = require("./config/db");
 const userRouters = require("./routes/user");
 const cors = require("cors")
-const session = require("express-session")
+const session = require("express-session");
+const productRouters = require("./routes/product");
+const uploadsRouters = require("./routes/upload");
 
 const app = express();
 const PORT = process.env.PORT
@@ -17,7 +19,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use(session({
-    secret: process.env.SESSION_SECRET ,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -29,6 +31,8 @@ app.use(session({
 }));
 
 app.use("/user", userRouters)
+app.use("/product", productRouters)
+app.use("/file_upload", uploadsRouters)
 
 app.get("/", (req, res) => {
     res.json({
