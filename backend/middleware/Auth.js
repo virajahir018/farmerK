@@ -8,7 +8,7 @@ function Auth(req, res, next) {
         });
     }
 
-    next();
+        next();
 }
 
 module.exports = Auth;

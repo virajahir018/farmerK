@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { userLogin } from '../../api/userApi';
 
 export default function Login({ setIsLogin }) {
 
@@ -16,11 +17,7 @@ export default function Login({ setIsLogin }) {
         e.preventDefault();
 
         try {
-            const res = await axios.post("http://localhost:5000/user/login",
-                { email, password },
-                { withCredentials: true }
-            )
-
+            const res = await userLogin(email, password)
             console.log(res.data)
 
             setData(res.data)
@@ -32,7 +29,8 @@ export default function Login({ setIsLogin }) {
                     navigate("/")
                 }, 1000)
 
-                setIsLogin(true)
+                setIsLogin(true);
+
             }
 
         } catch (error) {
