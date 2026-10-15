@@ -3,13 +3,16 @@ const multer = require("multer");
 const { Readable } = require("stream");
 const Auth = require("../middleware/Auth");
 const cloudinary = require("../config/cloudinary");
-const Product = require("../models/Products");
+const Products = require("../models/Products");
 
 const uploadsRouters = express.Router();
 
 const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 5 * 1024 * 1024 },
+    limits: {
+        fileSize: 5 * 1024 * 1024,
+        files: 10
+    },
     fileFilter: (req, file, cb) => {
 
         const allowedTypes = [
@@ -28,7 +31,7 @@ const upload = multer({
     }
 });
 
-uploadsRouters.post("/add", Auth, upload.single("image"), async (req, res) => {
+uploadsRouters.post("/single", Auth, upload.single("image"), async (req, res) => {
     let uploadedPublicId;
 
     try {
@@ -72,7 +75,7 @@ uploadsRouters.post("/add", Auth, upload.single("image"), async (req, res) => {
 
         uploadedPublicId = result.public_id;
 
-        const product = await Product.create({
+        const product = await Products.create({
             user: req.session.userId,
             name,
             description,
@@ -104,9 +107,102 @@ uploadsRouters.post("/add", Auth, upload.single("image"), async (req, res) => {
     }
 })
 
+uploadsRouters.post("/multiple", Auth, upload.array("images", 10), async (req, res) => {
+    const uploadedPublicIds = [];
+
+    try {
+        const products = JSON.parse(req.body.products);
+        const files = req.files;
+
+        if (!Array.isArray(products) || products.length === 0) {
+            return res.status(400).json({
+                message: "Please send products as a JSON array"
+            });
+        }
+
+        if (products.length !== files.length) {
+            return res.status(400).json({
+                message: "Each product must have one image"
+            });
+        }
+
+        for (const item of products) {
+            if (
+                !item.name?.trim() ||
+                !item.description?.trim() ||
+                item.price === undefined ||
+                item.price === "" ||
+                !Number.isFinite(Number(item.price)) ||
+                Number(item.price) < 0
+            ) {
+                return res.status(400).json({
+                    message: "Every product needs a name, description and valid price"
+                });
+            }
+        }
+
+        const uploadedImages = await Promise.all(
+            files.map((file) =>
+                new Promise((resolve, reject) => {
+                    const stream = cloudinary.uploader.upload_stream(
+                        {
+                            folder: "farmer_products",
+                            resource_type: "image"
+                        },
+                        (error, result) => {
+                            if (error) return reject(error);
+
+                            uploadedPublicIds.push(result.public_id);
+
+                            resolve({
+                                image: result.secure_url,
+                                imageId: result.public_id
+                            });
+                        }
+                    );
+
+                    Readable.from(file.buffer).pipe(stream);
+                })
+            )
+        );
+
+        const productDocuments = products.map((item, index) => ({
+            user: req.session.userId,
+            name: item.name.trim(),
+            description: item.description.trim(),
+            price: Number(item.price),
+            image: uploadedImages[index].image,
+            imageId: uploadedImages[index].imageId
+        }));
+
+        const savedProducts = await Products.insertMany(productDocuments);
+
+        return res.status(201).json({
+            message: "Products and images uploaded successfully",
+            products: savedProducts
+        });
+
+    } catch (error) {
+        console.error("Product upload error:", error);
+
+        await Promise.all(
+            uploadedPublicIds.map((publicId) =>
+                cloudinary.uploader.destroy(publicId).catch((cleanupError) => {
+                    console.error("Image cleanup failed:", cleanupError.message);
+                })
+            )
+        );
+
+        return res.status(500).json({
+            message: "Unable to add products"
+        });
+    }
+}
+);
+
 uploadsRouters.get("/all", Auth, async (req, res) => {
     try {
-        const products = await Product.find({ availability: true })
+        const products = await Products.find({ availability: true })
             .populate("user", "name")
             .sort({ createdAt: -1 });
 
@@ -119,4 +215,33 @@ uploadsRouters.get("/all", Auth, async (req, res) => {
         });
     }
 });
+
+uploadsRouters.get("/get_page", async (req, res) => {
+    try {
+        const page = Math.max(1, parseInt(req.query.page, 10));
+        const limit = Math.max(1, parseInt(req.query.limit, 10));
+
+        const skip = (page - 1) * limit;
+
+        const products = await Products.find({ availability: true })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const totalProduct = await Products.countDocuments();
+
+        const totalPages = Math.ceil(totalProduct / limit);
+
+        res.json({
+            products,
+            totalProduct,
+            totalPages
+        })
+    } catch (error) {
+        res.json({
+            message: error.message
+        })
+    }
+})
+
 module.exports = uploadsRouters;
