@@ -15,9 +15,22 @@ export const userLogin = async (email, password) => {
     return response;
 }
 
+export const userProfile = async () => {
+
+    const response = await API.get("/user/profile");
+
+    return response;
+}
 export const productAll = async () => {
 
     const response = await API.get("/file_upload/all");
+
+    return response;
+}
+
+export const productPagi = async (page) => {
+
+    const response = await API.get(`/file_upload/get_page?page=${page}`);
 
     return response;
 }

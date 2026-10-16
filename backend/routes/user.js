@@ -159,16 +159,22 @@ userRouters.post("/login", async (req, res) => {
             });
         }
 
-        // const token = GenerateToken({
-        //     id: user._id,
-        //     email: user.email
-        // });
-
         req.session.userId = user._id;
 
-        return res.json({
-            message: "Login successfully",
+        req.session.save((err) => {
+            if (err) {
+                console.error("Session save error:", err);
+
+                return res.status(500).json({
+                    message: "Session save failed"
+                });
+            }
+
+            return res.json({
+                message: "Login successfully",
+            });
         });
+
 
     } catch (error) {
         return res.status(500).json({
@@ -178,12 +184,17 @@ userRouters.post("/login", async (req, res) => {
 });
 
 
-userRouters.get("/profile", Auth, (req, res) => {
+
+userRouters.get("/profile", Auth, async (req, res) => {
+
+    const user = await User.findOne({ _id: req.user })
 
     res.json({
         message: "User profile",
+        user
     })
 })
+
 
 
 userRouters.get("/logout", (req, res) => {

@@ -5,8 +5,7 @@ const connectMD = require("./config/db");
 const userRouters = require("./routes/user");
 const cors = require("cors")
 const session = require("express-session");
-const productRouters = require("./routes/product");
-const uploadsRouters = require("./routes/upload");
+const productsRouters = require("./routes/products");
 
 const app = express();
 const PORT = process.env.PORT
@@ -31,8 +30,7 @@ app.use(session({
 }));
 
 app.use("/user", userRouters)
-app.use("/product", productRouters)
-app.use("/file_upload", uploadsRouters)
+app.use("/file_upload", productsRouters)
 
 app.get("/", (req, res) => {
     res.json({

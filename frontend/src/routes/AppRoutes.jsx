@@ -8,6 +8,7 @@ import Login from '../components/user/Login'
 import LogOut from '../components/profile/LogOut'
 import Location from '../components/profile/Location'
 import Profile from '../components/profile/Profile'
+import ProductPagi from '../components/ProductPagi'
 
 export default function AppRoutes({ setIsLogin }) {
     return (
@@ -19,6 +20,7 @@ export default function AppRoutes({ setIsLogin }) {
             <Route path='/login' element={<Login setIsLogin={setIsLogin} />} />
             <Route path='/profile' element={<Profile setIsLogin={setIsLogin} />} />
             <Route path='/location' element={<Location />} />
+            <Route path='/product_pagi' element={<ProductPagi />} />
         </Routes>
     )
 }

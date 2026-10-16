@@ -5,7 +5,7 @@ const Auth = require("../middleware/Auth");
 const cloudinary = require("../config/cloudinary");
 const Products = require("../models/Products");
 
-const uploadsRouters = express.Router();
+const productsRouters = express.Router();
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -31,7 +31,7 @@ const upload = multer({
     }
 });
 
-uploadsRouters.post("/single", Auth, upload.single("image"), async (req, res) => {
+productsRouters.post("/single", Auth, upload.single("image"), async (req, res) => {
     let uploadedPublicId;
 
     try {
@@ -107,7 +107,7 @@ uploadsRouters.post("/single", Auth, upload.single("image"), async (req, res) =>
     }
 })
 
-uploadsRouters.post("/multiple", Auth, upload.array("images", 10), async (req, res) => {
+productsRouters.post("/multiple", Auth, upload.array("images", 10), async (req, res) => {
     const uploadedPublicIds = [];
 
     try {
@@ -200,7 +200,7 @@ uploadsRouters.post("/multiple", Auth, upload.array("images", 10), async (req, r
 }
 );
 
-uploadsRouters.get("/all", Auth, async (req, res) => {
+productsRouters.get("/all", async (req, res) => {
     try {
         const products = await Products.find({ availability: true })
             .populate("user", "name")
@@ -216,15 +216,15 @@ uploadsRouters.get("/all", Auth, async (req, res) => {
     }
 });
 
-uploadsRouters.get("/get_page", async (req, res) => {
+productsRouters.get("/get_page", async (req, res) => {
     try {
         const page = Math.max(1, parseInt(req.query.page, 10));
-        const limit = Math.max(1, parseInt(req.query.limit, 10));
+        const limit = Math.max(1, parseInt(4, 10));
 
         const skip = (page - 1) * limit;
 
         const products = await Products.find({ availability: true })
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: -1, _id: -1 })
             .skip(skip)
             .limit(limit);
 
@@ -233,9 +233,9 @@ uploadsRouters.get("/get_page", async (req, res) => {
         const totalPages = Math.ceil(totalProduct / limit);
 
         res.json({
-            products,
             totalProduct,
-            totalPages
+            totalPages,
+            products
         })
     } catch (error) {
         res.json({
@@ -244,4 +244,4 @@ uploadsRouters.get("/get_page", async (req, res) => {
     }
 })
 
-module.exports = uploadsRouters;
+module.exports = productsRouters;

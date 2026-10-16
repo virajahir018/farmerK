@@ -10,17 +10,21 @@ export default function App() {
 
   async function fetchdata() {
 
-    let data = await axios.get("http://localhost:5000/user/profile",
+    try {
+      const response = await axios.get(
+        'http://localhost:5000/user/profile',
+        { withCredentials: true }
+      );
 
-      { withCredentials: true }
+      if (response.data.message === 'User profile') {
+        setIsLogin(true);
+      }
+    } catch (error) {
+      console.log('Profile API error:', error.response?.status, error.response?.data);
 
-    )
-
-    let res = await data.data
-
-
-    if (res.message == "User profile") {
-      setIsLogin(true)
+      if (error.response?.status === 401) {
+        setIsLogin(false);
+      }
     }
 
   }
