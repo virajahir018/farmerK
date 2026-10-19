@@ -15,9 +15,9 @@ export const userLogin = async (email, password) => {
     return response;
 }
 
-export const userProfile = async () => {
+export const userProfile = async (data) => {
 
-    const response = await API.get("/user/profile");
+    const response = await API.post("/user/update", { data });
 
     return response;
 }

@@ -28,8 +28,22 @@ const userSchema = new mongoose.Schema({
     },
 
     location: {
-        type: String,
-        default: ""
+        city: {
+            type: String,
+            default: ""
+        },
+        state: {
+            type: String,
+            default: ""
+        },
+        country: {
+            type: String,
+            default: ""
+        },
+        pinCode: {
+            type: String,
+            default: ""
+        }
     },
 
     produce: {
