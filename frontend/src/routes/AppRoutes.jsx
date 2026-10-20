@@ -5,10 +5,10 @@ import VerifyOTP from '../components/user/VerifyOTP'
 import VerifyUser from '../components/user/VerifyUser'
 import Register from '../components/user/Register'
 import Login from '../components/user/Login'
-import LogOut from '../components/profile/LogOut'
-import Location from '../components/profile/Location'
-import Profile from '../components/profile/Profile'
 import ProductPagi from '../components/ProductPagi'
+import UpdateProfile from '../components/profile/UpdateProfile'
+import Profile from '../components/profile/Profile'
+import LogOut from '../components/profile/LogOut'
 
 export default function AppRoutes({ setIsLogin }) {
     return (
@@ -18,9 +18,10 @@ export default function AppRoutes({ setIsLogin }) {
             <Route path='/verify-otp' element={<VerifyOTP />} />
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login setIsLogin={setIsLogin} />} />
-            <Route path='/profile' element={<Profile setIsLogin={setIsLogin} />} />
-            <Route path='/location' element={<Location />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/update_profile' element={<UpdateProfile />} />
             <Route path='/product_pagi' element={<ProductPagi />} />
+            <Route path='/logout' element={<LogOut setIsLogin={setIsLogin} />} />
         </Routes>
     )
 }

@@ -11,7 +11,6 @@ export default function Home() {
       const response = await productAll();
 
       setData(response.data);
-      console.log(response.data);
 
     } catch (error) {
       console.log(error.response?.data)
@@ -24,7 +23,7 @@ export default function Home() {
 
   return (
 
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-10">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-4">
       <h1 className="mb-2 text-3xl font-bold text-gray-800">
         FarmerK Products
       </h1>

@@ -37,9 +37,11 @@ export default function App() {
   }, [])
 
   return (
-    <>
+    <div className="min-h-screen bg-slate-50 md:flex">
       <Navbar isLogin={isLogin} />
-      <AppRoutes setIsLogin={setIsLogin} />
-    </>
+      <div className="min-w-0 flex-1">
+        <AppRoutes setIsLogin={setIsLogin} />
+      </div>
+    </div>
   )
 }

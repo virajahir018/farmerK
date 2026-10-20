@@ -1,313 +1,121 @@
-
 import React, { useEffect, useState } from 'react'
 import { FaUserCircle } from 'react-icons/fa'
+import UpdateProfile from './UpdateProfile'
 import { userProfile } from '../../api/userApi'
-import axios from 'axios'
+import LogOut from './LogOut'
 
-export default function Profile({ setIsLogin }) {
-    const [user, setUser] = useState(null)
+export default function Profile() {
     const [isEditing, setIsEditing] = useState(false)
-    const [location, setLocation] = useState(null);
-    const [error, setError] = useState("");
-    const [data, setData] = useState({
-        role: "user",
-        Contact: "",
-        location: {
-            city: "",
-            state: "",
-            country: "",
-            pinCode: ""
-        },
-        information: "",
-        Preferences: "",
-        Produce: "",
-    });
+    const [profile, setProfile] = useState(null)
+    const [profileError, setProfileError] = useState("")
 
     const fetchData = async () => {
         try {
-            const response = await userProfile(data)
-            setUser(response.data.user)
-            console.log(response.data)
+            const response = await userProfile()
+            setProfile(response.data.user)
         } catch (error) {
-            console.log(error.response?.data)
+            setProfileError(error.response?.data?.message || "Could not load your profile.")
         }
     }
 
     useEffect(() => {
-        fetchData()
+        fetchData();
+    }, []);
 
-    }, [])
-
-    async function getLocation() {
-
-        setError("");
-
-        if (!navigator.geolocation) {
-            setError("Browser not support location");
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-
-            async (position) => {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-
-                const userLocation = ({
-                    type: "Point",
-                    coordinates: [longitude, latitude]
-                })
-
-                setLocation(userLocation);
-
-                console.log(userLocation);
-
-                try {
-                    const response = await axios.get("https://nominatim.openstreetmap.org/reverse", {
-
-                        params: {
-                            format: "jsonv2",
-                            lat: latitude,
-                            lon: longitude,
-                            addressdetails: 1
-                        },
-
-                        headers: {
-                            "Accept-Language": "en"
-                        }
-                    });
-
-                    const address = response.data.address;
-
-                    setData((prev) => ({
-                        ...prev,
-                        location: {
-                            city:
-                                address.city ||
-                                address.town ||
-                                address.village ||
-                                address.county ||
-                                "",
-                            state: address.state || "",
-                            country: address.country || "",
-                            pinCode: address.postcode || "",
-                        },
-                    }));
-
-                    const data = await response.data;
-                    console.log(data.address);
-                } catch (error) {
-
-                }
-            },
-
-            (err) => {
-                setError("allow Location permission");
-                console.log(err.message);
-            }
-        )
-    }
-
-    const changeSubmit = (e) => {
-        const { name, value } = e.target;
-
-        setData({
-            ...data,
-            [name]: value
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(data);
-    };
-
-    const changeLocation = (e) => {
-        const { name, value } = e.target;
-
-        setData({
-            ...data,
-            location: {
-                ...data.location,
-                [name]: value
-            }
-        });
-    }
-
-    if (!user) {
-        return <div className="p-10">Loading profile...</div>
-    }
 
     return (
-        <div className="min-h-screen bg-gray-50 px-4 py-10">
-            <div className="mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
+        <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-4">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(250px,0.8fr)_minmax(0,2fr)]">
 
-                <h1 className="mb-2 text-2xl font-bold text-gray-800">
-                    Edit Profile
-                </h1>
-
-                <p className="mb-8 text-sm text-gray-500">
-                    Update your personal information below.
-                </p>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-
-                    {/* Role */}
-                    <div>
-                        <label className="mb-2 block text-sm font-semibold text-gray-700">
-                            Select Role
-                        </label>
-
-                        <select
-                            name="role"
-                            value={data.role}
-                            onChange={changeSubmit}
-                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                        >
-                            <option value="user">User</option>
-                            <option value="farmer">Farmer</option>
-                        </select>
+                <section className="flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+                    <div className="flex h-28 w-28 items-center justify-center rounded-full">
+                        <FaUserCircle className="text-8xl text-gray-500" />
                     </div>
+                    <h1 className="mt-5 text-2xl font-bold text-slate-800">
+                        {profile?.name || "Your Profile"}
+                    </h1>
+                    <p className="mt-2 mb-10 text-sm capitalize bg-green-100 px-3 py-2 font-medium rounded-2xl text-green-700">
+                        {profile?.role || "Loading profile..."}
+                    </p>
 
-                    {/* Contact */}
-                    <div>
-                        <label className="mb-2 block text-sm font-semibold text-gray-700">
-                            Contact Number
-                        </label>
+                </section>
 
-                        <input
-                            type="tel"
-                            name="Contact"
-                            value={data.Contact}
-                            onChange={changeSubmit}
-                            placeholder="Enter contact number"
-                            className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                        />
-                    </div>
-
-                    {/* Location */}
-                    <div>
-                        <button onClick={getLocation}
-                            type="button"
-                            className="w-full tex-c bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition duration-200"
-                        >
-                            Get Current Location
-                        </button>
-
-                        {error && (
-                            <p className="mt-2 text-sm text-red-600">{error}</p>
-                        )}
-
-                        <h2 className="mb-4 text-lg font-bold text-gray-800">
-                            Location Details
-                        </h2>
-
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
-                            <input
-                                type="text"
-                                name="city"
-                                value={data.location.city}
-                                onChange={changeLocation}
-                                placeholder="City"
-                                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                            />
-
-                            <input
-                                type="text"
-                                name="state"
-                                value={data.location.state}
-                                onChange={changeLocation}
-                                placeholder="State"
-                                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                            />
-
-                            <input
-                                type="text"
-                                name="country"
-                                value={data.location.country}
-                                onChange={changeLocation}
-                                placeholder="Country"
-                                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                            />
-
-                            <input
-                                type="text"
-                                inputMode="numeric"
-                                name="pinCode"
-                                value={data.location.pinCode}
-                                onChange={changeLocation}
-                                placeholder="PIN Code"
-                                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                            />
+                <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+                    {profileError ? (
+                        <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                            {profileError}
+                        </p>
+                    ) : profile?.role === "farmer" ? (
+                        <div>
+                            <h2 className="text-2xl font-bold text-slate-800">
+                                Farmer Profile
+                            </h2>
+                            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                                <div className="rounded-xl bg-slate-50 p-4">
+                                    <h3 className="text-sm font-semibold text-slate-500">Contact</h3>
+                                    <p className="mt-1 break-words text-slate-800">{profile.contact || "Not provided"}</p>
+                                </div>
+                                <div className="rounded-xl bg-slate-50 p-4">
+                                    <h3 className="text-sm font-semibold text-slate-500">Location</h3>
+                                    <p className="mt-1 text-slate-800">
+                                        {[profile.location?.city, profile.location?.district, profile.location?.state, profile.location?.pinCode]
+                                            .filter(Boolean)
+                                            .join(", ") || "Not provided"}
+                                    </p>
+                                </div>
+                                <div className="rounded-xl bg-slate-50 p-4 sm:col-span-2">
+                                    <h3 className="text-sm font-semibold text-slate-500">About</h3>
+                                    <p className="mt-1 whitespace-pre-wrap text-slate-800">{profile.information || "Not provided"}</p>
+                                </div>
+                                <div className="rounded-xl bg-slate-50 p-4 sm:col-span-2">
+                                    <h3 className="text-sm font-semibold text-slate-500">Produce</h3>
+                                    <p className="mt-1 text-slate-800">
+                                        {profile.produce?.filter(Boolean).join(", ") || "Not provided"}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Information */}
-                    <div>
-                        <label className="mb-2 block text-sm font-semibold text-gray-700">
-                            About You
-                        </label>
-
-                        <textarea
-                            name="information"
-                            value={data.information}
-                            onChange={changeSubmit}
-                            rows="4"
-                            placeholder="Tell us something about yourself..."
-                            className="w-full resize-y rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                        />
-                    </div>
-
-                    {/* Preferences */}
-                    <div>
-                        <label className="mb-2 block text-sm font-semibold text-gray-700">
-                            Preferences
-                        </label>
-
-                        <input
-                            type="text"
-                            name="Preferences"
-                            value={data.Preferences}
-                            onChange={changeSubmit}
-                            placeholder="e.g. Vegetables, Fruits, Organic food"
-                            className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                        />
-                    </div>
-
-                    {/* Farmer-only field */}
-                    {data.role === "farmer" && (
-                        <div className="rounded-xl border border-green-200 bg-green-50 p-5">
-                            <label className="mb-2 block text-sm font-semibold text-green-800">
-                                Produce
-                            </label>
-
-                            <input
-                                type="text"
-                                name="Produce"
-                                value={data.Produce}
-                                onChange={changeSubmit}
-                                placeholder="e.g. Wheat, Rice, Cotton"
-                                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
-                            />
-
-                            <p className="mt-2 text-xs text-gray-500">
-                                Enter the crops or products you grow or sell.
-                            </p>
+                    ) : isEditing && profile?.role === "user" ? (
+                        <>
+                            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                                <h2 className="text-2xl font-bold text-slate-800">
+                                    Update Profile
+                                </h2>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditing(false)}
+                                    className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                            <UpdateProfile />
+                        </>
+                    ) : profile?.role === "user" ? (
+                        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                            <div>
+                                <h2 className="text-2xl font-bold text-slate-800">
+                                    Your Profile
+                                </h2>
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Manage your personal and location details.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setIsEditing(true)}
+                                className="rounded-lg bg-green-700 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
+                            >
+                                Update Profile
+                            </button>
                         </div>
+                    ) : (
+                        <p className="text-sm text-slate-500">Loading profile...</p>
                     )}
+                </section>
 
-                    {/* Submit */}
-                    <button
-                        onClick={fetchData}
-                        type="submit"
-                        className="w-full rounded-lg bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 sm:w-auto"
-                    >
-                        Save Changes
-                    </button>
-
-                </form>
             </div>
-        </div>
+
+        </main>
     )
 }

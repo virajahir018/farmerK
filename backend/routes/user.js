@@ -185,6 +185,16 @@ userRouters.post("/login", async (req, res) => {
 
 userRouters.post("/update", Auth, async (req, res) => {
     try {
+        const { data } = req.body;
+
+        console.log(data)
+
+        if (!data) {
+            return res.status(400).json({
+                message: "Invalid data"
+            });
+        }
+
         const {
             role,
             contact,
@@ -192,38 +202,63 @@ userRouters.post("/update", Auth, async (req, res) => {
             information,
             preferences,
             produce
-        } = req.body;
+        } = data;
 
-        const user = await User.findByIdAndUpdate(
-            req.user,
-            {
-                $set: {
-                    role,
-                    contact,
-                    location,
-                    information,
-                    preferences,
-                    produce
-                }
-            },
-            {
-                new: true,
-                runValidators: true
-            }
-        ).select("-password");
-
-        if (!user) {
-            return res.status(404).json({
-                message: "User not found"
+        if (!contact || !location) {
+            return res.status(400).json({
+                message: "All fields are required"
             });
         }
 
-        res.status(200).json({
+        const { city, state, district, pinCode } = location;
+
+        if (!city || !state || !district || !pinCode) {
+            return res.status(400).json({
+                message: "All location fields are required"
+            });
+        }
+
+        if (!["user", "farmer", "admin"].includes(role)) {
+            return res.status(400).json({
+                message: "Invalid role"
+            });
+        }
+
+        const preferencesSplite = preferences.split(",");
+        const produceSplit = produce.split(",");
+
+        console.log(preferencesSplite);
+        console.log(produceSplit);
+
+        const userData = {
+            role,
+            contact,
+            location: {
+                city,
+                district,
+                state,
+                pinCode
+            },
+            information,
+            preferences: preferencesSplite,
+            produce: produceSplit
+        };
+
+        const user = await User.findByIdAndUpdate(
+            req.user,
+            { $set: userData },
+            { new: true, runValidators: true }
+        ).select("-password")
+
+
+        return res.status(200).json({
             message: "User updated successfully",
             user
         });
+
+
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message
         });
     }
@@ -234,6 +269,7 @@ userRouters.post("/update", Auth, async (req, res) => {
 userRouters.get("/profile", Auth, async (req, res) => {
 
     const user = await User.findOne({ _id: req.user })
+        .select("-password")
 
     res.json({
         message: "User profile",
@@ -243,7 +279,7 @@ userRouters.get("/profile", Auth, async (req, res) => {
 
 
 
-userRouters.get("/logout", (req, res) => {
+userRouters.post("/logout", Auth, (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({

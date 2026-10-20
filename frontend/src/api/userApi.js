@@ -15,12 +15,22 @@ export const userLogin = async (email, password) => {
     return response;
 }
 
-export const userProfile = async (data) => {
+export const userUpdate = async (data) => {
 
     const response = await API.post("/user/update", { data });
 
+    console.log(response)
+
     return response;
 }
+
+export const userProfile = async () => {
+
+    const response = await API.get("/user/profile");
+
+    return response;
+}
+
 export const productAll = async () => {
 
     const response = await API.get("/file_upload/all");
