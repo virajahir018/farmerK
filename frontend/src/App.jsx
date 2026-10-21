@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Navbar from './components/Navbar'
 import AppRoutes from './routes/AppRoutes'
 import { useState } from 'react'
-import axios from 'axios';
+import { userProfile } from './api/userApi';
 
 export default function App() {
 
@@ -11,10 +11,7 @@ export default function App() {
   async function fetchdata() {
 
     try {
-      const response = await axios.get(
-        'http://localhost:5000/user/profile',
-        { withCredentials: true }
-      );
+      const response = await userProfile();
 
       if (response.data.message === 'User profile') {
         setIsLogin(true);

@@ -96,8 +96,6 @@ export default function UpdateProfile() {
         }));
     };
 
-
-
     const changeLocation = (e) => {
         const { name, value } = e.target;
 

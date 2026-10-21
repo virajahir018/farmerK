@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { userVerifyOTP } from '../../api/userApi';
 
 export default function VerifyOTP() {
     const [otp, setOtp] = useState("");
@@ -11,11 +11,7 @@ export default function VerifyOTP() {
         e.preventDefault();
 
         try {
-            const res = await axios.post("http://localhost:5000/user/verify-otp",
-                { otp },
-                { withCredentials: true }
-            )
-
+            const res = await userVerifyOTP(otp);
             console.log(res.data)
             navigate("/register");
 

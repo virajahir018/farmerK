@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSignOutAlt } from 'react-icons/fa';
+import { userLogout } from '../../api/userApi';
 
 export default function LogOut({ setIsLogin }) {
 
@@ -9,10 +9,7 @@ export default function LogOut({ setIsLogin }) {
     const submit = async () => {
 
         try {
-            const response = await axios.post("http://localhost:5000/user/logout",
-                {},
-                { withCredentials: true }
-            )
+            const response = await userLogout();
 
             console.log(response?.data)
 

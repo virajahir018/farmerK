@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { userVerify } from '../../api/userApi';
 
 export default function VerifyUser() {
 
@@ -11,12 +12,7 @@ export default function VerifyUser() {
         e.preventDefault();
 
         try {
-            const res = await axios.post("http://localhost:5000/user/verify-user",
-                { email },
-                {
-                    withCredentials: true
-                }
-            )
+            const res = await userVerify(email);
 
             console.log(res.data)
 
