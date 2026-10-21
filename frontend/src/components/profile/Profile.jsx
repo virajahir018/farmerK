@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 import UpdateProfile from './UpdateProfile'
 import { userProfile } from '../../api/userApi'
-import LogOut from './LogOut'
 
 export default function Profile() {
     const [isEditing, setIsEditing] = useState(false)

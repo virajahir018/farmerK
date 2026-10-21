@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,23 +10,21 @@ export default function Login({ setIsLogin }) {
     const [data, setData] = useState({});
     const navigate = useNavigate();
 
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const res = await userLogin(email, password)
-            console.log(res.data)
+            const response = await userLogin(email, password)
+            console.log(response.data)
 
-            setData(res.data)
+            setData(response.data)
 
 
-            if (res.data.message === "Login successfully") {
+            if (response.data.message === "Login successfully") {
 
                 setTimeout(() => {
                     navigate("/")
-                }, 1000)
+                }, 500)
 
                 setIsLogin(true);
 
@@ -38,6 +35,7 @@ export default function Login({ setIsLogin }) {
             setData(error.response?.data)
         }
     }
+
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
 

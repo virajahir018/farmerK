@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://farmerk.onrender.com",
+    baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true
 });
 
@@ -63,7 +63,7 @@ export const userProfile = async () => {
 
 export const userLogout = async () => {
 
-    const response = await API.post("/user/logout");
+    const response = await API.post("/user/logout", {});
 
     return response;
 }

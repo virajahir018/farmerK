@@ -11,7 +11,9 @@ const app = express();
 const PORT = process.env.PORT
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173",
+        "https://farmer-k.vercel.app"
+    ],
     credentials: true
 }))
 
@@ -24,7 +26,7 @@ app.use(session({
     cookie: {
         httpOnly: true,
         secure: false,
-        sameSite: "none",
+        sameSite: "lax",
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
@@ -41,5 +43,6 @@ app.get("/", (req, res) => {
 connectDB();
 
 app.listen(PORT, () => {
+    console.log(process.env.MONGO_URL)
     console.log("Server running on port", PORT);
 });

@@ -175,7 +175,6 @@ userRouters.post("/login", async (req, res) => {
             });
         });
 
-
     } catch (error) {
         return res.status(500).json({
             message: error.message,
@@ -264,8 +263,6 @@ userRouters.post("/update", Auth, async (req, res) => {
     }
 });
 
-
-
 userRouters.get("/profile", Auth, async (req, res) => {
 
     const user = await User.findOne({ _id: req.user })
@@ -276,8 +273,6 @@ userRouters.get("/profile", Auth, async (req, res) => {
         user
     })
 })
-
-
 
 userRouters.post("/logout", Auth, (req, res) => {
     req.session.destroy((err) => {
