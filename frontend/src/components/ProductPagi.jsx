@@ -15,6 +15,10 @@ export default function ProductPagi() {
             try {
                 const response = await productPagi(page);
 
+                console.log("Full response:", response);
+                console.log("Response data:", response.data);
+                console.log("Products:", response.data.products);
+
                 setData(response.data.products);
                 setTotalPages(response.data.totalPages);
                 console.log(response.data.products)
