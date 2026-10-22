@@ -62,6 +62,8 @@ userRouters.post("/verify-user", async (req, res) => {
 
         const email = req.body?.email?.trim().toLowerCase();
 
+        console.log("Email:", email);
+
         if (!email) {
             return res.status(400).json({
                 message: "Email is required"
@@ -70,6 +72,7 @@ userRouters.post("/verify-user", async (req, res) => {
 
         const user = await User.findOne({ email });
         console.log("2. User lookup completed");
+        console.log("User found:", !!user);
 
         if (user) {
             return res.status(409).json({
