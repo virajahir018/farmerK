@@ -53,23 +53,30 @@ const userRouters = express.Router();
 
 userRouters.post("/verify-user", async (req, res) => {
     try {
-        const { email } = req.body;
+        console.log("1. Verify route started");
+
+        const email = req.body?.email?.trim().toLowerCase();
 
         if (!email) {
-            return res.status(404).json({
-                message: "Email not define"
-            })
+            return res.status(400).json({
+                message: "Email is required"
+            });
         }
-
-        console.log("1. Verify route started");
 
         const user = await User.findOne({ email });
         console.log("2. User lookup completed");
+
+        if (user) {
+            return res.status(409).json({
+                message: "User already registered"
+            });
+        }
 
         const otp = crypto.randomInt(100000, 1000000).toString();
 
         req.session.otp = otp;
         req.session.email = email;
+        req.session.otpExpires = Date.now() + 5 * 60 * 1000;
 
         console.log("3. Before sending email");
 
@@ -85,19 +92,27 @@ userRouters.post("/verify-user", async (req, res) => {
         req.session.save((err) => {
             if (err) {
                 console.error("Session save error:", err);
-                return res.status(500).json({ message: "Session save failed" });
+
+                return res.status(500).json({
+                    message: "Session save failed"
+                });
             }
 
             console.log("5. Session saved");
-            return res.status(200).json({ message: "OTP sent successfully" });
+
+            return res.status(200).json({
+                message: "OTP sent successfully"
+            });
         });
 
     } catch (error) {
-        res.json({
-            message: error.message
-        })
+        console.error("Verify user error:", error);
+
+        return res.status(500).json({
+            message: "Failed to send OTP"
+        });
     }
-})
+});
 
 userRouters.post("/verify-otp", async (req, res) => {
     try {
