@@ -51,6 +51,11 @@ const userRouters = express.Router();
 //     }
 // })
 
+userRouters.post("/verify-user", (req, res, next) => {
+    console.log("VERIFY USER ROUTE HIT");
+    next();
+});
+
 userRouters.post("/verify-user", async (req, res) => {
     try {
         console.log("1. Verify route started");
