@@ -51,7 +51,7 @@ const userRouters = express.Router();
 //     }
 // })
 
-router.get("/verify", async (req, res) => {
+userRouters.get("/verify", async (req, res) => {
     try {
         res.status(200).json({
             message: "Verify route working"
