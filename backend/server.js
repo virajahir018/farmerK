@@ -4,7 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo").default;
 
 const userRouters = require("./routes/user");
 const productsRouters = require("./routes/products");
@@ -35,7 +35,7 @@ app.use(session({
         mongoUrl: process.env.MONGO_URL,
         collectionName: "sessions"
     }),
-
+    
     cookie: {
         httpOnly: true,
         secure: true,
