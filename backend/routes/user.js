@@ -10,58 +10,46 @@ const session = require("express-session");
 
 const userRouters = express.Router();
 
-// userRouters.post("/verify-user", async (req, res) => {
-//     try {
-//         const { email } = req.body;
-
-//         if (!email) {
-//             return res.status(404).json({
-//                 message: "Email not define"
-//             })
-//         }
-
-//         const user = await User.findOne({ email })
-
-//         if (user) {
-//             return res.status(404).json({
-//                 message: "user already registered"
-//             })
-//         }
-
-//         const otp = crypto.randomInt(100000, 1000000).toString();
-
-//         req.session.otp = otp;
-//         req.session.email = email;
-
-//         await Transporter.sendMail({
-//             from: process.env.EMAIL_USER,
-//             to: email,
-//             subject: "Verifycation gmail",
-//             text: `Your OTP ${otp}. This OTP is valid for 5 minutes.`
-//         })
-
-//         res.json({
-//             message: "OTP send successfully",
-//         })
-
-//     } catch (error) {
-//         res.json({
-//             message: error.message
-//         })
-//     }
-// })
-
-userRouters.get("/verify", async (req, res) => {
+userRouters.post("/verify-user", async (req, res) => {
     try {
-        res.status(200).json({
-            message: "Verify route working"
-        });
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(404).json({
+                message: "Email not define"
+            })
+        }
+
+        const user = await User.findOne({ email })
+
+        if (user) {
+            return res.status(404).json({
+                message: "user already registered"
+            })
+        }
+
+        const otp = crypto.randomInt(100000, 1000000).toString();
+
+        req.session.otp = otp;
+        req.session.email = email;
+
+        await Transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Verifycation gmail",
+            text: `Your OTP ${otp}. This OTP is valid for 5 minutes.`
+        })
+
+        res.json({
+            message: "OTP send successfully",
+        })
+
     } catch (error) {
-        res.status(500).json({
+        res.json({
             message: error.message
-        });
+        })
     }
-});
+})
 
 userRouters.post("/verify-otp", async (req, res) => {
     try {
