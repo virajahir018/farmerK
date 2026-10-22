@@ -31,7 +31,7 @@ const upload = multer({
     }
 });
 
-productsRouters.post("/single", Auth, upload.single("image"), async (req, res) => {
+productsRouters.post("/single", upload.single("image"), async (req, res) => {
     let uploadedPublicId;
 
     try {
