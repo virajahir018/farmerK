@@ -107,7 +107,7 @@ productsRouters.post("/single", upload.single("image"), async (req, res) => {
     }
 })
 
-productsRouters.post("/multiple", Auth, upload.array("images", 10), async (req, res) => {
+productsRouters.post("/multiple", upload.array("images", 10), async (req, res) => {
     const uploadedPublicIds = [];
 
     try {
