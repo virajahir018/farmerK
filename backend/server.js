@@ -31,21 +31,16 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
 
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URL,
-        collectionName: "sessions"
-    }),
-    
     cookie: {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: false,
+        sameSite: "lax",
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
 app.use("/user", userRouters);
-app.use("/file_upload", productsRouters);
+app.use("/product", productsRouters);
 
 app.get("/", (req, res) => {
     res.json({

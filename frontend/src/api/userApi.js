@@ -70,14 +70,23 @@ export const userLogout = async () => {
 
 export const productAll = async () => {
 
-    const response = await API.get("/file_upload/all");
+    const response = await API.get("/product/all");
 
     return response;
 }
 
 export const productPagi = async (page) => {
 
-    const response = await API.get(`/file_upload/get_page?page=${page}`);
+    const response = await API.get(`/product/get_page?page=${page}`);
 
     return response;
+}
+
+
+export const productId = async (id) => {
+
+    const response = await API.get(`/product/${id}`);
+
+    return response;
+
 }

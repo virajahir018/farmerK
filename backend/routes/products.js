@@ -31,7 +31,7 @@ const upload = multer({
     }
 });
 
-productsRouters.post("/single", upload.single("image"), async (req, res) => {
+productsRouters.post("/single", Auth, upload.single("image"), async (req, res) => {
     let uploadedPublicId;
 
     try {
@@ -107,7 +107,7 @@ productsRouters.post("/single", upload.single("image"), async (req, res) => {
     }
 })
 
-productsRouters.post("/multiple", upload.array("images", 10), async (req, res) => {
+productsRouters.post("/multiple", Auth, upload.array("images", 10), async (req, res) => {
     const uploadedPublicIds = [];
 
     try {
@@ -236,6 +236,24 @@ productsRouters.get("/get_page", async (req, res) => {
             totalProduct,
             totalPages,
             products
+        })
+    } catch (error) {
+        res.json({
+            message: error.message
+        })
+    }
+})
+
+productsRouters.get("/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const product = await Products.findById(id)
+            .populate("user", "-password")
+
+        res.json({
+            message: "Product find successfully",
+            product
         })
     } catch (error) {
         res.json({

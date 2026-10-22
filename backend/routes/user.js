@@ -10,124 +10,124 @@ const session = require("express-session");
 
 const userRouters = express.Router();
 
-// userRouters.post("/verify-user", async (req, res) => {
-//     try {
-//         const { email } = req.body;
-
-//         if (!email) {
-//             return res.status(404).json({
-//                 message: "Email not define"
-//             })
-//         }
-
-//         const user = await User.findOne({ email })
-
-//         if (user) {
-//             return res.status(404).json({
-//                 message: "user already registered"
-//             })
-//         }
-
-//         const otp = crypto.randomInt(100000, 1000000).toString();
-
-//         req.session.otp = otp;
-//         req.session.email = email;
-
-//         await Transporter.sendMail({
-//             from: process.env.EMAIL_USER,
-//             to: email,
-//             subject: "Verifycation gmail",
-//             text: `Your OTP ${otp}. This OTP is valid for 5 minutes.`
-//         })
-
-//         res.json({
-//             message: "OTP send successfully",
-//         })
-
-//     } catch (error) {
-//         res.json({
-//             message: error.message
-//         })
-//     }
-// })
-
-userRouters.post("/verify-user", (req, res, next) => {
-    console.log("VERIFY USER ROUTE HIT");
-    next();
-});
-
 userRouters.post("/verify-user", async (req, res) => {
     try {
-        console.log("1. Verify route started");
-
-        const email = req.body?.email?.trim().toLowerCase();
-
-        console.log("Email:", email);
+        const { email } = req.body;
 
         if (!email) {
-            return res.status(400).json({
-                message: "Email is required"
-            });
+            return res.status(404).json({
+                message: "Email not define"
+            })
         }
 
-        const user = await User.findOne({ email });
-        console.log("2. User lookup completed");
-        console.log("User found:", !!user);
+        const user = await User.findOne({ email })
 
         if (user) {
-            return res.status(409).json({
-                message: "User already registered"
-            });
+            return res.status(404).json({
+                message: "user already registered"
+            })
         }
 
         const otp = crypto.randomInt(100000, 1000000).toString();
 
         req.session.otp = otp;
         req.session.email = email;
-        req.session.otpExpires = Date.now() + 5 * 60 * 1000;
 
-        console.log("3. Before sending email");
+        await Transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Verifycation gmail",
+            text: `Your OTP ${otp}. This OTP is valid for 5 minutes.`
+        })
 
-        try {
-            const info = await Transporter.sendMail({
-                from: process.env.EMAIL_USER,
-                to: email,
-                subject: "Email Verification OTP",
-                text: `Your OTP is ${otp}. It is valid for 5 minutes.`
-            });
-
-            console.log("3.3 Email sent:", info.messageId);
-        } catch (error) {
-            console.error("EMAIL ERROR:", error.message);
-            throw error;
-        }
-
-        console.log("4. Email sent successfully");
-
-        req.session.save((err) => {
-            if (err) {
-                console.error("Session save error:", err);
-
-                return res.status(500).json({
-                    message: "Session save failed"
-                });
-            }
-
-            console.log("5. Session saved");
-
-            return res.status(200).json({
-                message: "OTP sent successfully"
-            });
-        });
+        res.json({
+            message: "OTP send successfully",
+        })
 
     } catch (error) {
-        console.error("Verify user error:", error);
-
-        return res.status(500).json({
-            message: "Failed to send OTP"
-        });
+        res.json({
+            message: error.message
+        })
     }
-});
+})
+
+// userRouters.post("/verify-user", (req, res, next) => {
+//     console.log("VERIFY USER ROUTE HIT");
+//     next();
+// });
+
+// userRouters.post("/verify-user", async (req, res) => {
+//     try {
+//         console.log("1. Verify route started");
+
+//         const email = req.body?.email?.trim().toLowerCase();
+
+//         console.log("Email:", email);
+
+//         if (!email) {
+//             return res.status(400).json({
+//                 message: "Email is required"
+//             });
+//         }
+
+//         const user = await User.findOne({ email });
+//         console.log("2. User lookup completed");
+//         console.log("User found:", !!user);
+
+//         if (user) {
+//             return res.status(409).json({
+//                 message: "User already registered"
+//             });
+//         }
+
+//         const otp = crypto.randomInt(100000, 1000000).toString();
+
+//         req.session.otp = otp;
+//         req.session.email = email;
+//         req.session.otpExpires = Date.now() + 5 * 60 * 1000;
+
+//         console.log("3. Before sending email");
+
+//         try {
+//             const info = await Transporter.sendMail({
+//                 from: process.env.EMAIL_USER,
+//                 to: email,
+//                 subject: "Email Verification OTP",
+//                 text: `Your OTP is ${otp}. It is valid for 5 minutes.`
+//             });
+
+//             console.log(" Email sent:", info.messageId);
+//         } catch (error) {
+//             console.error("EMAIL ERROR:", error.message);
+//             throw error;
+//         }
+
+//         console.log("4. Email sent successfully");
+
+//         req.session.save((err) => {
+//             if (err) {
+//                 console.error("Session save error:", err);
+
+//                 return res.status(500).json({
+//                     message: "Session save failed"
+//                 });
+//             }
+
+//             console.log("5. Session saved");
+
+//             return res.status(200).json({
+//                 message: "OTP sent successfully"
+//             });
+//         });
+
+//     } catch (error) {
+//         console.error("Verify user error:", error);
+
+//         return res.status(500).json({
+//             message: "Failed to send OTP"
+//         });
+//     }
+// });
 
 userRouters.post("/verify-otp", async (req, res) => {
     try {
