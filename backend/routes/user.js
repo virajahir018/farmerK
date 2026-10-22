@@ -88,12 +88,19 @@ userRouters.post("/verify-user", async (req, res) => {
 
         console.log("3. Before sending email");
 
-        await Transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "Email Verification OTP",
-            text: `Your OTP is ${otp}. It is valid for 5 minutes.`
-        });
+        try {
+            const info = await Transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: "Email Verification OTP",
+                text: `Your OTP is ${otp}. It is valid for 5 minutes.`
+            });
+
+            console.log("3.3 Email sent:", info.messageId);
+        } catch (error) {
+            console.error("EMAIL ERROR:", error.message);
+            throw error;
+        }
 
         console.log("4. Email sent successfully");
 
