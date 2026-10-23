@@ -4,6 +4,7 @@ const { Readable } = require("stream");
 const Auth = require("../middleware/Auth");
 const cloudinary = require("../config/cloudinary");
 const Products = require("../models/Products");
+const Role = require("../middleware/Role");
 
 const productsRouters = express.Router();
 
@@ -31,7 +32,7 @@ const upload = multer({
     }
 });
 
-productsRouters.post("/single", Auth, upload.single("image"), async (req, res) => {
+productsRouters.post("/add_single_product", Auth, Role, upload.single("image"), async (req, res) => {
     let uploadedPublicId;
 
     try {
@@ -107,7 +108,7 @@ productsRouters.post("/single", Auth, upload.single("image"), async (req, res) =
     }
 })
 
-productsRouters.post("/multiple", Auth, upload.array("images", 10), async (req, res) => {
+productsRouters.post("/add_multiple_product", Auth, upload.array("images", 10), async (req, res) => {
     const uploadedPublicIds = [];
 
     try {

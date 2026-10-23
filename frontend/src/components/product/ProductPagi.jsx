@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { productPagi } from '../api/userApi';
+import { productPagi } from '../../api/userApi';
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
@@ -120,8 +120,5 @@ export default function ProductPagi() {
             </div>
 
         </div>
-        // <div>
-        //     {/* <h1>${data.products[0].name}</h1> */}
-        // </div>
     )
 }

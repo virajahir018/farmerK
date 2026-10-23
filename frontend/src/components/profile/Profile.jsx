@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 import UpdateProfile from './UpdateProfile'
 import { userProfile } from '../../api/userApi'
+import { useNavigate } from 'react-router-dom'
 
 export default function Profile() {
     const [isEditing, setIsEditing] = useState(false)
     const [profile, setProfile] = useState(null)
     const [profileError, setProfileError] = useState("")
+
+    const navigate = useNavigate();
 
     const fetchData = async () => {
         try {
@@ -111,7 +114,18 @@ export default function Profile() {
                     ) : (
                         <p className="text-sm text-slate-500">Loading profile...</p>
                     )}
+
+                    {["farmer", "admin"].includes(profile?.role) && (
+
+                        <button
+                            className='bg-green-100 text-green-700 rounded-md px-4 py-3 font-bold'
+                            onClick={() => navigate("/product-add")}
+                        >Add Product</button>
+
+                    )}
+
                 </section>
+
 
             </div>
 

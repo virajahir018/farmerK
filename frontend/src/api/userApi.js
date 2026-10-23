@@ -82,11 +82,17 @@ export const productPagi = async (page) => {
     return response;
 }
 
-
 export const productId = async (id) => {
 
     const response = await API.get(`/product/${id}`);
 
     return response;
 
+}
+
+export const productAdd = async () => {
+
+    const response = await API.post("/add_single_product");
+
+    return response;
 }

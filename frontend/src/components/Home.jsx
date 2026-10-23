@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { productAll } from '../api/userApi';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const [data, setData] = useState([]);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
 
@@ -35,6 +38,7 @@ export default function Home() {
         {data.map((p) => (
           <div
             key={p._id}
+            onClick={() => navigate(`/product/${p._id}`)}
             className="group overflow-hidden rounded-2xl border border-gray-50 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
           >
             <div className="h-52 overflow-hidden p-0.5 relative">
