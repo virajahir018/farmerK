@@ -38,6 +38,10 @@ productsRouters.post("/add_single_product", Auth, Role, upload.single("image"), 
     try {
         const { name, description, price } = req.body;
 
+
+        console.log("Body:", req.body);
+        console.log("File:", req.file);
+
         if (
             !name ||
             !description ||
@@ -103,7 +107,7 @@ productsRouters.post("/add_single_product", Auth, Role, upload.single("image"), 
             }
         }
         return res.status(500).json({
-            message: "Unable to add product"
+            message: "Unable to add product",
         });
     }
 })

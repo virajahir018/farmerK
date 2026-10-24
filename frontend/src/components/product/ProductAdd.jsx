@@ -1,20 +1,26 @@
-import React, { useState } from 'react'
+
+import React, { useState, useEffect } from "react";
+import { productAdd } from "../../api/userApi";
 
 export default function ProductAdd() {
   const [data, setData] = useState({
-    image: null,
+    images: [],
     name: "",
     price: "",
     description: ""
-  })
+  });
 
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Handle inputs and multiple images
   const changeSubmit = (e) => {
     const { name, value, files } = e.target;
 
-    if (name === 'image') {
+    if (name === "images") {
       setData((prev) => ({
         ...prev,
-        image: files?.[0] || null
+        images: Array.from(files || [])
       }));
     } else {
       setData((prev) => ({
@@ -24,37 +30,104 @@ export default function ProductAdd() {
     }
   };
 
-  const handleSubmit = () => {
+  // Generate and clean up image preview URLs
+  useEffect(() => {
+    const urls = data.images.map((file) =>
+      URL.createObjectURL(file)
+    );
 
-  }
+    setImagePreviews(urls);
 
-  console.log('Product form ready:', {
-    name: data.name,
-    price: data.price,
-    description: data.description,
-    image: data.image
-  });
+    return () => {
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [data.images]);
+
+  // Submit product
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (data.images.length === 0) {
+      alert("Please select at least one image");
+      return;
+    }
+
+    if (
+      !data.name.trim() ||
+      !data.description.trim() ||
+      data.price === "" ||
+      Number(data.price) < 0
+    ) {
+      alert("Please enter valid product details");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+
+      // Append every image with the same field name
+      data.images.forEach((image) => {
+        formData.append("images", image);
+      });
+
+      formData.append("name", data.name.trim());
+      formData.append("price", data.price);
+      formData.append("description", data.description.trim());
+
+      const response = await productAdd(formData);
+
+      console.log(response.data);
+      alert("Product added successfully!");
+
+      setData({
+        images: [],
+        name: "",
+        price: "",
+        description: ""
+      });
+
+      e.target.reset();
+    } catch (error) {
+      console.error(
+        "Product upload failed:",
+        error.response?.data || error.message
+      );
+
+      alert(
+        error.response?.data?.message ||
+        "Unable to add product"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-10 sm:px-6">
-      <form onSubmit={handleSubmit} className="mx-auto max-w-xl space-y-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-lg sm:p-8">
-
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto max-w-xl space-y-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-lg sm:p-8"
+      >
         <div className="mb-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-green-600">
             Farmer Dashboard
           </p>
+
           <h1 className="mt-2 text-3xl font-bold text-gray-900">
             Add New Product
           </h1>
+
           <p className="mt-2 text-sm text-gray-500">
-            Enter your product details to list it in the marketplace.
+            Enter product details and select multiple images.
           </p>
         </div>
 
-        {/* Product Image */}
+        {/* Multiple image upload */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            Product Image
+            Product Images
           </label>
 
           <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-8 transition hover:border-green-500 hover:bg-green-50">
@@ -73,86 +146,147 @@ export default function ProductAdd() {
             </svg>
 
             <span className="text-sm font-semibold text-gray-700">
-              Click to upload an image
+              Click to select images
             </span>
+
             <span className="mt-1 text-xs text-gray-500">
-              PNG, JPG or WEBP
+              PNG, JPG or WEBP · Select multiple files
             </span>
 
             <input
               type="file"
-              name="image"
+              name="images"
               accept="image/png,image/jpeg,image/webp"
+              multiple
               onChange={changeSubmit}
               className="sr-only"
             />
           </label>
         </div>
 
-        {/* Product Name */}
+        {/* Image previews */}
+        {data.images.length > 0 && (
+          <div>
+            <p className="mb-3 text-sm font-semibold text-gray-700">
+              Selected images ({data.images.length})
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {data.images.map((image, index) => (
+                <div
+                  key={`${image.name}-${image.lastModified}-${index}`}
+                  className="min-w-0 rounded-xl border border-green-200 bg-green-50 p-3"
+                >
+                  {imagePreviews[index] && (
+                    <img
+                      src={imagePreviews[index]}
+                      alt={image.name}
+                      className="h-32 w-full rounded-lg object-contain"
+                    />
+                  )}
+
+                  <p className="mt-2 truncate text-sm font-semibold text-gray-700">
+                    {image.name}
+                  </p>
+
+                  <p className="text-xs text-gray-500">
+                    {(image.size / 1024).toFixed(2)} KB
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setData((prev) => ({
+                        ...prev,
+                        images: prev.images.filter(
+                          (_, i) => i !== index
+                        )
+                      }));
+                    }}
+                    className="mt-2 text-xs font-semibold text-red-600 hover:text-red-800"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Product name */}
         <div>
-          <label htmlFor="name" className="mb-2 block text-sm font-semibold text-gray-700">
+          <label
+            htmlFor="name"
+            className="mb-2 block text-sm font-semibold text-gray-700"
+          >
             Product Name
           </label>
+
           <input
             id="name"
             name="name"
             value={data.name}
             onChange={changeSubmit}
             type="text"
+            required
             placeholder="e.g. Fresh Tomatoes"
-            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-green-600 focus:ring-4 focus:ring-green-100"
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-4 focus:ring-green-100"
           />
         </div>
 
-        {/* Product Price */}
+        {/* Price */}
         <div>
-          <label htmlFor="price" className="mb-2 block text-sm font-semibold text-gray-700">
+          <label
+            htmlFor="price"
+            className="mb-2 block text-sm font-semibold text-gray-700"
+          >
             Product Price (₹)
           </label>
-          <div className="flex items-center overflow-hidden rounded-xl border border-gray-300 transition focus-within:border-green-600 focus-within:ring-4 focus-within:ring-green-100">
-            <span className="bg-gray-50 px-4 py-3 font-semibold text-gray-600">
-              ₹
-            </span>
-            <input
-              id="price"
-              name="price"
-              type="number"
-              value={data.price}
-              onChange={changeSubmit}
-              min="0"
-              step="0.01"
-              placeholder="Enter price"
-              className="w-full bg-white px-4 py-3 text-gray-900 outline-none placeholder:text-gray-400"
-            />
-          </div>
+
+          <input
+            id="price"
+            name="price"
+            type="number"
+            value={data.price}
+            onChange={changeSubmit}
+            min="0"
+            step="0.01"
+            required
+            placeholder="Enter price"
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-4 focus:ring-green-100"
+          />
         </div>
 
         {/* Description */}
         <div>
-          <label htmlFor="description" className="mb-2 block text-sm font-semibold text-gray-700">
+          <label
+            htmlFor="description"
+            className="mb-2 block text-sm font-semibold text-gray-700"
+          >
             Product Description
           </label>
+
           <textarea
             id="description"
             name="description"
             value={data.description}
             onChange={changeSubmit}
-            rows="4"
-            placeholder="Describe your product, quality and freshness..."
-            className="w-full resize-y rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-green-600 focus:ring-4 focus:ring-green-100"
+            rows={4}
+            required
+            placeholder="Describe your product..."
+            className="w-full resize-y rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-4 focus:ring-green-100"
           />
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full rounded-xl bg-green-700 px-6 py-3.5 font-semibold text-white shadow-md transition hover:bg-green-800 active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-green-200"
+          disabled={loading}
+          className="w-full rounded-xl bg-green-700 px-6 py-3.5 font-semibold text-white shadow-md transition hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          + Add Product
+          {loading ? "Adding Product..." : "+ Add Product"}
         </button>
-
       </form>
     </div>
-  )
+  );
 }
