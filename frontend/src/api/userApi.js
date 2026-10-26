@@ -92,7 +92,7 @@ export const productId = async (id) => {
 
 export const productAdd = async (formData) => {
 
-    const response = await API.post("/product/add_single_product", formData);
+    const response = await API.post("/product/add", formData);
 
     return response;
 }

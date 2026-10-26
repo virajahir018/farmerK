@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { productAdd } from "../../api/userApi";
 
@@ -13,9 +12,10 @@ export default function ProductAdd() {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Handle inputs and multiple images
+
   const changeSubmit = (e) => {
     const { name, value, files } = e.target;
+
 
     if (name === "images") {
       setData((prev) => ({
@@ -30,7 +30,6 @@ export default function ProductAdd() {
     }
   };
 
-  // Generate and clean up image preview URLs
   useEffect(() => {
     const urls = data.images.map((file) =>
       URL.createObjectURL(file)
@@ -43,7 +42,6 @@ export default function ProductAdd() {
     };
   }, [data.images]);
 
-  // Submit product
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -67,7 +65,6 @@ export default function ProductAdd() {
 
       const formData = new FormData();
 
-      // Append every image with the same field name
       data.images.forEach((image) => {
         formData.append("images", image);
       });
@@ -278,7 +275,6 @@ export default function ProductAdd() {
           />
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
@@ -290,3 +286,46 @@ export default function ProductAdd() {
     </div>
   );
 }
+
+// import React, { useState } from 'react'
+
+// export default function ProductAdd() {
+//   const [images, setImages] = useState([]);
+
+//   const handleSubmit = (e) => {
+//     // const file = e.target.files[0];
+//     const files = Array.from(e.target.files);
+
+//     setImages(files)
+//   }
+
+//   let imagesUrl = images.map((image) => URL.createObjectURL(image));
+
+//   console.log(imagesUrl)
+
+//   // images.map((index, image) => {
+//   //   return console.log(index, " : ", image);
+//   // })
+
+//   return (
+//     <div>
+
+//       <input
+//         type="file"
+//         accept='image'
+//         multiple
+//         onChange={handleSubmit}
+//       />
+
+//       {images && (
+
+//         imagesUrl.map((image, index) => (
+//           <div key={index}>
+//             <img src={image} alt="Preview" onChange={handleSubmit} />
+//           </div>
+//         ))
+
+//       )}
+//     </div>
+//   )
+// }

@@ -32,7 +32,7 @@ const upload = multer({
     }
 });
 
-productsRouters.post("/add_single_product", Auth, Role, upload.single("image"), async (req, res) => {
+productsRouters.post("/add", Auth, Role, upload.array("images"), async (req, res) => {
     let uploadedPublicId;
 
     try {
@@ -112,98 +112,102 @@ productsRouters.post("/add_single_product", Auth, Role, upload.single("image"), 
     }
 })
 
-productsRouters.post("/add_multiple_product", Auth, upload.array("images", 10), async (req, res) => {
-    const uploadedPublicIds = [];
+// productsRouters.post("/add", Auth, upload.array("images", 10), async (req, res) => {
+//     const uploadedPublicIds = [];
 
-    try {
-        const products = JSON.parse(req.body.products);
-        const files = req.files;
+//     try {
+//         const products = JSON.parse(req.body);
+//         const files = req.files;
 
-        if (!Array.isArray(products) || products.length === 0) {
-            return res.status(400).json({
-                message: "Please send products as a JSON array"
-            });
-        }
+//         console.log("Body : ", req.body)
+//         console.log("Files : ", req.files)
 
-        if (products.length !== files.length) {
-            return res.status(400).json({
-                message: "Each product must have one image"
-            });
-        }
+//         if (!Array.isArray(products) || products.length === 0) {
+//             return res.status(400).json({
+//                 message: "Please send products as a JSON array"
+//             });
+//         }
 
-        for (const item of products) {
-            if (
-                !item.name?.trim() ||
-                !item.description?.trim() ||
-                item.price === undefined ||
-                item.price === "" ||
-                !Number.isFinite(Number(item.price)) ||
-                Number(item.price) < 0
-            ) {
-                return res.status(400).json({
-                    message: "Every product needs a name, description and valid price"
-                });
-            }
-        }
+//         if (products.length !== files.length) {
+//             return res.status(400).json({
+//                 message: "Each product must have one image"
+//             });
+//         }
 
-        const uploadedImages = await Promise.all(
-            files.map((file) =>
-                new Promise((resolve, reject) => {
-                    const stream = cloudinary.uploader.upload_stream(
-                        {
-                            folder: "farmer_products",
-                            resource_type: "image"
-                        },
-                        (error, result) => {
-                            if (error) return reject(error);
+//         for (const item of products) {
+//             if (
+//                 !item.name?.trim() ||
+//                 !item.description?.trim() ||
+//                 item.price === undefined ||
+//                 item.price === "" ||
+//                 !Number.isFinite(Number(item.price)) ||
+//                 Number(item.price) < 0
+//             ) {
+//                 return res.status(400).json({
+//                     message: "Every product needs a name, description and valid price"
+//                 });
+//             }
+//         }
 
-                            uploadedPublicIds.push(result.public_id);
+//         // const uploadedImages = await Promise.all(
+//         //     files.map((file) =>
+//         //         new Promise((resolve, reject) => {
+//         //             const stream = cloudinary.uploader.upload_stream(
+//         //                 {
+//         //                     folder: "farmer_products",
+//         //                     resource_type: "image"
+//         //                 },
+//         //                 (error, result) => {
+//         //                     if (error) return reject(error);
 
-                            resolve({
-                                image: result.secure_url,
-                                imageId: result.public_id
-                            });
-                        }
-                    );
+//         //                     uploadedPublicIds.push(result.public_id);
 
-                    Readable.from(file.buffer).pipe(stream);
-                })
-            )
-        );
+//         //                     resolve({
+//         //                         image: result.secure_url,
+//         //                         imageId: result.public_id
+//         //                     });
+//         //                 }
+//         //             );
 
-        const productDocuments = products.map((item, index) => ({
-            user: req.session.userId,
-            name: item.name.trim(),
-            description: item.description.trim(),
-            price: Number(item.price),
-            image: uploadedImages[index].image,
-            imageId: uploadedImages[index].imageId
-        }));
+//         //             Readable.from(file.buffer).pipe(stream);
+//         //         })
+//         //     )
+//         // );
 
-        const savedProducts = await Products.insertMany(productDocuments);
+//         const productDocuments = products.map((item, index) => ({
+//             user: req.session.userId,
+//             name: item.name.trim(),
+//             description: item.description.trim(),
+//             price: Number(item.price),
+//             image: uploadedImages[index].image,
+//             imageId: uploadedImages[index].imageId
+//         }));
 
-        return res.status(201).json({
-            message: "Products and images uploaded successfully",
-            products: savedProducts
-        });
+//         // const savedProducts = await Products.insertMany(productDocuments);
 
-    } catch (error) {
-        console.error("Product upload error:", error);
+//         return res.status(201).json({
+//             message: "Products and images uploaded successfully",
+//             products: productDocuments
+//         });
 
-        await Promise.all(
-            uploadedPublicIds.map((publicId) =>
-                cloudinary.uploader.destroy(publicId).catch((cleanupError) => {
-                    console.error("Image cleanup failed:", cleanupError.message);
-                })
-            )
-        );
+//     } catch (error) {
+//         console.error("Product upload error:", error);
 
-        return res.status(500).json({
-            message: "Unable to add products"
-        });
-    }
-}
-);
+//         await Promise.all(
+//             uploadedPublicIds.map((publicId) =>
+//                 cloudinary.uploader.destroy(publicId).catch((cleanupError) => {
+//                     console.error("Image cleanup failed:", cleanupError.message);
+//                 })
+//             )
+//         );
+
+//         return res.status(500).json({
+//             message: "Unable to add products",
+//             error: error.message
+//         });
+//     }
+// }
+// );
 
 productsRouters.get("/all", async (req, res) => {
     try {
