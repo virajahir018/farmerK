@@ -82,12 +82,14 @@ productsRouters.post("/add", Auth, Role, upload.array("images"), async (req, res
             )
         );
 
+        console.log(uploadedImages)
+
         const product = await Products.create({
             user: req.session.userId,
             name,
             description,
             price,
-            image: uploadedImages
+            images: uploadedImages
         });
 
         return res.status(201).json({
@@ -95,8 +97,10 @@ productsRouters.post("/add", Auth, Role, upload.array("images"), async (req, res
             product
         });
 
+
     } catch (error) {
         console.error("Product upload error:", error);
+
 
         await Promise.all(
             uploadedPublicIds.map(async (publicId) => {

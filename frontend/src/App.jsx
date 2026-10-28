@@ -19,7 +19,7 @@ export default function App() {
     } catch (error) {
       console.log('Profile API error:', error.response?.status, error.response?.data);
 
-      if (error.response?.status === 401) {
+      if (error?.response?.status === 401) {
         setIsLogin(false);
       }
     }
