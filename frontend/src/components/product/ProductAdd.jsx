@@ -20,7 +20,7 @@ export default function ProductAdd() {
     if (name === "images") {
       setData((prev) => ({
         ...prev,
-        images: Array.from(files || [])
+        images: Array.from(files)
       }));
     } else {
       setData((prev) => ({

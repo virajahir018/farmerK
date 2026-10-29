@@ -54,17 +54,22 @@ export default function ProductPagi() {
                         onClick={() => navigate(`/product/${p._id}`)}
                         className="group overflow-hidden rounded-2xl border border-gray-50 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                     >
-                        <div className="h-52 overflow-hidden p-0.5 relative">
+                        <div className="relative h-56 overflow-hidden bg-gray-100">
                             <img
-                                src={p.image}
+                                src={p.images?.[0]?.image}
                                 alt={p.name}
-                                className="h-full w-full rounded-xl object-cover transition-transform duration-500 group-hover:scale-105"
+                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
 
-                            <span className="absolute top-2 right-2 rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+                            <span className="absolute left-3 top-3 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
                                 Available
                             </span>
 
+                            {p.images?.length > 1 && (
+                                <span className="absolute bottom-3 right-3 rounded-full bg-black/70 px-2 py-1 text-xs font-medium text-white">
+                                    +{p.images.length - 1}
+                                </span>
+                            )}
                         </div>
 
                         <div className="p-5">

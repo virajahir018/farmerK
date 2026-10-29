@@ -4,9 +4,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const crypto = require("crypto");
 const Transporter = require("../utils/sendMail");
-const GenerateToken = require("../utils/token");
 const Auth = require("../middleware/Auth");
-const session = require("express-session");
 
 const userRouters = express.Router();
 

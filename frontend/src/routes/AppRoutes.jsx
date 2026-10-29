@@ -9,7 +9,6 @@ import UpdateProfile from '../components/profile/UpdateProfile'
 import Profile from '../components/profile/Profile'
 import LogOut from '../components/profile/LogOut'
 import ProductAdd from '../components/product/ProductAdd'
-import ProductPagi from '../components/product/ProductPagi'
 import ProductDetails from '../components/product/ProductDetails'
 
 export default function AppRoutes({ setIsLogin }) {
@@ -22,10 +21,10 @@ export default function AppRoutes({ setIsLogin }) {
             <Route path='/login' element={<Login setIsLogin={setIsLogin} />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/update_profile' element={<UpdateProfile />} />
-            <Route path='/product_pagi' element={<ProductPagi />} />
             <Route path='/logout' element={<LogOut setIsLogin={setIsLogin} />} />
             <Route path='/product/:id' element={<ProductDetails />} />
             <Route path='/product-add' element={<ProductAdd />} />
         </Routes>
     )
 }
+

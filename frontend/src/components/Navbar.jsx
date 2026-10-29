@@ -24,16 +24,7 @@ export default function Navbar({ isLogin }) {
                     <FaHome className="text-lg" />
                     Home
                 </NavLink>
-                <NavLink
-                    to="/product_pagi"
-                    className={({ isActive }) =>
-                        `flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition ${isActive ? "bg-white text-green-900 shadow-sm" : "text-green-50 hover:bg-white/10"
-                        }`
-                    }
-                >
-                    <FaBoxOpen className="text-lg" />
-                    Products
-                </NavLink>
+
                 {isLogin ? (
                     <div >
                         <div className='mb-2'>

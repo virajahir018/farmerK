@@ -184,4 +184,33 @@ productsRouters.get("/:id", async (req, res) => {
     }
 })
 
+productsRouters.post("/filter", async (req, res) => {
+    try {
+        const { user, name, price, availability } = req.query;
+
+        let filter = {};
+
+        if (user) filter.user = user;
+        if (name) filter.name = { $regex: name, $options: "i" };
+
+
+
+        const product = await Products.find({ price });
+
+        if (product.length === 0) {
+            return res.json({
+                message: "Product not found"
+            })
+        }
+
+
+        return res.json(product)
+
+    } catch (error) {
+        return res.json({
+            massege: error.message
+        })
+    }
+})
+
 module.exports = productsRouters;
