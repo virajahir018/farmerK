@@ -184,7 +184,7 @@ productsRouters.get("/:id", async (req, res) => {
     }
 })
 
-productsRouters.post("/filter", async (req, res) => {
+productsRouters.post("/search", async (req, res) => {
     try {
         const { user, name, price, availability } = req.query;
 
@@ -192,19 +192,30 @@ productsRouters.post("/filter", async (req, res) => {
 
         if (user) filter.user = user;
         if (name) filter.name = { $regex: name, $options: "i" };
+        if (price) filter.price = price
+        if (availability !== undefined) {
+            filter.availability = availability === "true";
+        }
+
+        // if (filter.user === undefined && filter.name === undefined) {
+        //     return res.json({
+        //         message: "Please enter input"
+        //     })
+        // }
 
 
+        const products = await Products.find(filter);
 
-        const product = await Products.find({ price });
-
-        if (product.length === 0) {
+        if (products.length === 0) {
             return res.json({
-                message: "Product not found"
+                message: "Product not found",
             })
         }
 
-
-        return res.json(product)
+        return res.status(200).json({
+            message: "Product fetch successfully",
+            products
+        })
 
     } catch (error) {
         return res.json({
