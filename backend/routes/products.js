@@ -186,23 +186,24 @@ productsRouters.get("/:id", async (req, res) => {
 
 productsRouters.post("/search", async (req, res) => {
     try {
-        const { user, name, price, availability } = req.query;
+        const { name, price } = req.body;
+
+        console.log(req.body);
 
         let filter = {};
 
-        if (user) filter.user = user;
+        // if (user) filter.user = user;
         if (name) filter.name = { $regex: name, $options: "i" };
         if (price) filter.price = price
-        if (availability !== undefined) {
-            filter.availability = availability === "true";
-        }
-
-        // if (filter.user === undefined && filter.name === undefined) {
-        //     return res.json({
-        //         message: "Please enter input"
-        //     })
+        // if (availability !== undefined) {
+        // filter.availability = availability === "true";
         // }
 
+        if (filter.name === undefined && filter.price === undefined) {
+            return res.json({
+                message: "Please enter input"
+            })
+        }
 
         const products = await Products.find(filter);
 
@@ -220,6 +221,43 @@ productsRouters.post("/search", async (req, res) => {
     } catch (error) {
         return res.json({
             massege: error.message
+        })
+    }
+})
+
+productsRouters.post("/productLocation", async (req, res) => {
+
+    try {
+        const { city } = req.body;
+
+        const product = await Products.find()
+            .populate({
+                path: "user",
+                match: {
+                    "location.city": {
+                        $regex: city,
+                        $options: "i"
+                    }
+                },
+                select: "name location"
+            });
+
+
+        const filterProduct = product.filter((product) => product.user !== null);
+
+        if (filterProduct.length === 0) {
+            return res.json({
+                message: "Product not found"
+            });
+        }
+        
+        return res.json({
+            message: "Product find successfully",
+            filterProduct
+        })
+    } catch (error) {
+        return res.json({
+            message: error.message
         })
     }
 })

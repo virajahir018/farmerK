@@ -99,7 +99,7 @@ export const productAdd = async (formData) => {
 
 export const productSearch = async (search) => {
 
-    const response = await API.post(`/product/search?name=${search}`);
+    const response = await API.post("/product/search", search);
 
     return response;
 }

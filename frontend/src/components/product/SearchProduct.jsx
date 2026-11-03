@@ -11,11 +11,6 @@ export default function SearchProduct({ search }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        
-        if (!search?.trim()) {
-            setData([]);
-            return;
-        }
 
         const fetchData = async () => {
             try {
@@ -24,12 +19,12 @@ export default function SearchProduct({ search }) {
 
                 const response = await productSearch(search);
 
-                // Agar backend array return karta hai
                 const products = Array.isArray(response.data)
                     ? response.data
                     : response.data.products ?? [];
 
                 setData(products);
+                console.log(response.data)
             } catch (error) {
                 console.log(error?.response?.data);
                 setData([]);
@@ -61,7 +56,7 @@ export default function SearchProduct({ search }) {
             </h1>
 
             <p className="mb-8 text-gray-500">
-                Products matching "{search}"
+                Products matching
             </p>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

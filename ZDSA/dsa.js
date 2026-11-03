@@ -1,23 +1,23 @@
-function FoundDuplicate(arr) {
+function FoundDuplicate(nums) {
 
     let duplicate = [];
-    let store = [arr[0]];
+    let store = [nums[0]];
 
-    for (let i = 1; i < arr.length; i++) {
+    for (let i = 1; i < nums.length; i++) {
 
         let found = false;
 
         for (let j = 0; j < store.length; j++) {
-            if (arr[i] === store[j]) {
+            if (nums[i] === store[j]) {
                 found = true;
                 break;
             }
         }
 
         if (found) {
-            duplicate.push(arr[i]);
+            duplicate.push(nums[i]);
         } else {
-            store.push(arr[i])
+            store.push(nums[i])
         }
     }
 
@@ -27,12 +27,12 @@ function FoundDuplicate(arr) {
 }
 FoundDuplicate([1, 2, 3, 2, 4, 1])
 
-function SecoundLargest(arr) {
+function SecoundLargest(nums) {
 
     let largest = 0;
     let secound = 0;
 
-    for (const num of arr) {
+    for (const num of nums) {
 
         if (num > largest) {
             secound = largest;
@@ -42,25 +42,25 @@ function SecoundLargest(arr) {
         }
     }
 
-    // console.log(arr)
+    // console.log(nums)
     // console.log("Highrest : ", largest)
     // console.log("Secouns highest : ", secound)
 
 }
 SecoundLargest([23, 5, 21, 8, 20])
 
-function Practice(arr, arr1, str) {
-    // const s = arr.reduce((t, c) => {
+function Practice(nums, nums1, str) {
+    // const s = nums.reduce((t, c) => {
     //     return t += c;
     // }, 0)
 
-    // arr.reverse()
+    // nums.reverse()
 
-    // console.log(arr.join(" "))
+    // console.log(nums.join(" "))
 
-    // console.log(arr.concat(arr1));
+    // console.log(nums.concat(nums1));
 
-    // console.log(arr.flat())
+    // console.log(nums.flat())
 
     // let r = str.at(-1)
     // console.log(str.indexOf(r))
@@ -72,33 +72,34 @@ function Practice(arr, arr1, str) {
 
     let num = 80
 
-    for (const i of arr1) {
+    for (const i of nums1) {
         obj[i] = (obj[i] || 0) + 1
     }
     obj.num = 80
+
     // console.log(obj)
 
 }
 Practice([10, 20, 30, [40, 50]], [60, 70, 70, 80, 80, 80], ("hello"))
 
-function Even(arr) {
-    const r = arr.filter((num) => num % 2 === 0)
+function Even(nums) {
+    const r = nums.filter((num) => num % 2 === 0)
     // console.log(r)
 }
 Even([1, 2, 3, 4, 5, 6])
 
-function Sum(arr) {
-    const r = arr.reduce((s, c) => s += c, 0)
+function Sum(nums) {
+    const r = nums.reduce((s, c) => s += c, 0)
     // console.log(r)
 }
 Sum([10, 20, 30, 40])
 
-function Slargest(arr) {
+function Slargest(nums) {
 
     let largest = 0;
     let secound = 0;
 
-    for (const num of arr) {
+    for (const num of nums) {
 
         if (num > largest) {
 
@@ -165,11 +166,11 @@ function FoundC(str) {
 FoundC("hello");
 
 
-function RemoveDuplicate(arr) {
+function RemoveDuplicate(nums) {
 
     let n = [];
 
-    for (const num of arr) {
+    for (const num of nums) {
         if (!n.includes(num)) {
             n.push(num);
         }
@@ -181,9 +182,9 @@ function RemoveDuplicate(arr) {
 RemoveDuplicate([1, 2, 2, 3, 3]);
 
 
-function RemoveDuplicate2(arr) {
+function RemoveDuplicate2(nums) {
 
-    const n = [...new Set(arr)];
+    const n = [...new Set(nums)];
 
     // console.log(n)
 
@@ -226,16 +227,59 @@ function Anagram(str, check) {
 Anagram("listen", "silentt");
 
 
-function Missing(arr) {
+function Missing(nums) {
 
-    let n = arr.length + 1;
+    let n = nums.length + 1;
 
     let nSum = n * (n + 1) / 2;
 
-    let arrSum = arr.reduce((sum, num) => sum + num, 0)
+    let numsSum = nums.reduce((sum, num) => sum + num, 0)
 
-    let result = nSum - arrSum;
+    let result = nSum - numsSum;
 
-    console.log(result)
+    // console.log(result)
 }
 Missing([1, 2, 3, 5]);
+
+
+function Sum3(nums) {
+    let result = [];
+
+    nums.sort((a, b) => a - b);
+
+
+    for (let i = 0; i < nums.length - 2; i++) {
+
+        let left = i + 1;
+        let right = nums.length - 1;
+
+        let sum = 0;
+
+        if (i > 0 && nums[i] === nums[i - 1]) {
+            continue;
+        }
+
+        while (left < right) {
+
+            sum = nums[i] + nums[left] + nums[right];
+
+            if (sum === 0) {
+
+                result.push([nums[i], nums[left], nums[right]]);
+
+                left++;
+                right--;
+
+            } else if (sum > 0) {
+                right--;
+            } else {
+                left++;
+            }
+        }
+
+    }
+
+    console.log(result);
+
+}
+Sum3([1, 2, 0, 1, 0, 0, 0, 0])

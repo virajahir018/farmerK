@@ -6,17 +6,33 @@ import { FaSearch } from "react-icons/fa";
 
 export default function Home() {
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(null);
   const [value, setValue] = useState("");
 
   const handleSearch = () => {
-    setSearch(value.trim())
+    const input = value.trim();
+
+    if (!input) return;
+
+    if (!isNaN(input)) {
+
+      setSearch({
+        price: input
+      })
+
+    } else {
+
+      setSearch({
+        name: input
+      })
+
+    }
+
   }
 
   return (
     <>
-      {/* Search Bar */}
-      < div className="mb-8 flex w-full max-w-2xl mx-auto items-center gap-3 rounded-2xl border border-gray-200 bg-white p-2 shadow-sm transition focus-within:border-green-50 focus-within:ring-4 focus-within:ring-green-100" >
+      < div className="mb-8 mt-5 flex w-full max-w-2xl mx-auto items-center gap-3 rounded-2xl border border-gray-200 bg-white p-2 shadow-sm transition" >
 
         <span className="pl-3 text-xl text-gray-400">
           <FaSearch />
@@ -31,7 +47,7 @@ export default function Home() {
           }}
           value={value}
           type="text"
-          placeholder="Search products..."
+          placeholder="Search products name and price"
           className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm text-gray-700 outline-none placeholder:text-gray-400 sm:text-base"
         />
 
@@ -44,13 +60,11 @@ export default function Home() {
         </button>
       </div >
 
-      {/* Products */}
-      {
-        !search ? (
-          <ProductPagi />
-        ) : (
-          <SearchProduct search={search} />
-        )
+      {search === null ? (
+        <ProductPagi />
+      ) : (
+        <SearchProduct search={search} />
+      )
       }
     </>
   )
