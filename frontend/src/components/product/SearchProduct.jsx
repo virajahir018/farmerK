@@ -10,6 +10,8 @@ export default function SearchProduct({ search }) {
 
     const navigate = useNavigate();
 
+    console.log("Search : ", search)
+
     useEffect(() => {
 
         const fetchData = async () => {
@@ -24,11 +26,11 @@ export default function SearchProduct({ search }) {
                     : response.data.products ?? [];
 
                 setData(products);
-                console.log(response.data)
+
             } catch (error) {
                 console.log(error?.response?.data);
                 setData([]);
-                setError("Products fetch nahi ho paaye.");
+                setError("Products fetch unsuccessful");
             } finally {
                 setLoading(false);
             }

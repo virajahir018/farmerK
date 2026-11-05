@@ -146,6 +146,7 @@ productsRouters.get("/get_page", async (req, res) => {
         const skip = (page - 1) * limit;
 
         const products = await Products.find({ availability: true })
+            .populate("user", "name")
             .sort({ createdAt: -1, _id: -1 })
             .skip(skip)
             .limit(limit);
@@ -188,8 +189,6 @@ productsRouters.post("/search", async (req, res) => {
     try {
         const { name, price } = req.body;
 
-        console.log(req.body);
-
         let filter = {};
 
         // if (user) filter.user = user;
@@ -225,10 +224,12 @@ productsRouters.post("/search", async (req, res) => {
     }
 })
 
-productsRouters.post("/productLocation", async (req, res) => {
+productsRouters.post("/product-Location", async (req, res) => {
 
     try {
         const { city } = req.body;
+
+        // console.log("City : ", req.body)
 
         const product = await Products.find()
             .populate({
@@ -250,7 +251,7 @@ productsRouters.post("/productLocation", async (req, res) => {
                 message: "Product not found"
             });
         }
-        
+
         return res.json({
             message: "Product find successfully",
             filterProduct

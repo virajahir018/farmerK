@@ -20,11 +20,10 @@ export default function ProductPagi() {
 
                 setData(response.data.products);
                 setTotalPages(response.data.totalPages);
-                // console.log(response.data.products)
 
             } catch (error) {
                 console.log(error.response?.data)
-            }
+            }   
         }
 
         fetchProducts();

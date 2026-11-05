@@ -103,3 +103,10 @@ export const productSearch = async (search) => {
 
     return response;
 }
+
+export const productLocation = async (city) => {
+
+    const response = await API.post("/product/product-Location", {city});
+
+    return response;
+}

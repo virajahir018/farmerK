@@ -279,7 +279,70 @@ function Sum3(nums) {
 
     }
 
-    console.log(result);
+    // console.log(result);
 
 }
 Sum3([1, 2, 0, 1, 0, 0, 0, 0])
+
+
+// let nums = [1, 2, 3, 4, 5, 6, 7];
+// let k = 3;
+
+function Rotate(left, right) {
+
+    if (k > nums.length) {
+        k = k % nums.length;
+    }
+
+
+    while (left < right) {
+
+        [nums[left], nums[right]] = [nums[right], nums[left]];
+
+        left++;
+        right--;
+    }
+
+    // console.log(nums)
+}
+// Rotate(0, nums.length - 1,);
+// Rotate(0, k - 1,);
+// Rotate(k, nums.length - 1,);
+
+
+function SlidingWindo() {
+
+    let nums = [1, 4, 2, 10, 23, 3, 1, 0, 20];
+    let k = 4;
+    let sum = 0;
+
+    function subArr() {
+
+        for (let i = 0; i < k; i++) {
+            sum += nums[i];
+        }
+
+        let Max = sum;
+        let maxNums = 0;
+
+        for (let i = k; i < nums.length; i++) {
+
+
+            sum += nums[i];
+            sum -= nums[i - k];
+
+            if (sum > Max) {
+                Max = sum;
+                maxNums = i - k + 1;
+            }
+        }
+
+        maxNums = nums.slice(maxNums, maxNums + k)
+
+        console.log(Max)
+        console.log(maxNums)
+    }
+
+    subArr();
+}
+SlidingWindo();
