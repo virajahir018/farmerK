@@ -8,6 +8,7 @@ const session = require("express-session");
 const userRouters = require("./routes/user");
 const productsRouters = require("./routes/products");
 const connectDB = require("./config/db");
+const cartRouter = require("./routes/cart");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -38,6 +39,7 @@ app.use(session({
 
 app.use("/user", userRouters);
 app.use("/product", productsRouters);
+app.use("/cart", cartRouter);
 
 app.get("/", (req, res) => {
     res.json({
