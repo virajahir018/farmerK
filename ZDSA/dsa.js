@@ -343,6 +343,23 @@ function SlidingWindo() {
         console.log(maxNums)
     }
 
-    subArr();
+    // subArr();
 }
 SlidingWindo();
+
+
+// let nums = [1,1, 2, 3, 4, 5];
+// let k = 3;
+function R(l, r) {
+
+    while (l < r) {
+        [nums[l], nums[r]] = [nums[r], nums[l]];
+
+        l++;
+        r--;
+    }
+    // console.log(nums)
+}
+// R(0, nums.length - 1);
+// R(0, k - 1);
+// R(k, nums.length - 1)

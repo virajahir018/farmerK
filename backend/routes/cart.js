@@ -64,7 +64,7 @@ cartRouter.post("/create/:id", Auth, async (req, res) => {
     }
 })
 
-cartRouter.get("/", Auth, async (req, res) => {
+cartRouter.get("/get", Auth, async (req, res) => {
     try {
 
         const userId = req.user;
@@ -109,11 +109,14 @@ cartRouter.get("/", Auth, async (req, res) => {
                             subtotal: "$subtotal"
                         }
                     },
-                    totalePrice: {
+                    totalPrice: {
                         $sum: "$subtotal"
                     }
+
                 },
+
             }
+
         ])
 
         res.json(cart)
