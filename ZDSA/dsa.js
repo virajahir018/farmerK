@@ -363,3 +363,30 @@ function R(l, r) {
 // R(0, nums.length - 1);
 // R(0, k - 1);
 // R(k, nums.length - 1)
+
+function subArr(arr, k) {
+    let sum = 0;
+    let maxArr = arr.slice(0, k);
+
+    for (let i = 0; i < k; i++) {
+        sum += arr[i];
+    }
+
+    let max = sum;
+
+    for (let i = k; i < arr.length; i++) {
+        sum += arr[i];
+        sum -= arr[i - k];
+
+        if (sum < max) {
+            maxArr = arr.slice(i - k + 1, i + 1);
+        }
+
+        max = Math.min(max, sum);
+    }
+
+    console.log(max);
+    console.log(maxArr);
+
+}
+subArr([1, 4, 10, 2, 3, 23, 5, 20, 21], 4);

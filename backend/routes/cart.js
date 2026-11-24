@@ -6,7 +6,7 @@ const { default: mongoose } = require("mongoose");
 
 const cartRouter = express.Router();
 
-cartRouter.post("/create/:id", Auth, async (req, res) => {
+cartRouter.post("/add/:id", Auth, async (req, res) => {
     try {
 
         const productId = req.params.id;
@@ -15,10 +15,6 @@ cartRouter.post("/create/:id", Auth, async (req, res) => {
         if (!quantity) {
             quantity = 1;
         }
-
-        // console.log(quantity);
-
-        // console.log(productId)
 
         const product = await Products.findById(productId)
 

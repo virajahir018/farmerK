@@ -1,24 +1,24 @@
-function Duplicate(arr) {
+function Duplicate(nums) {
 
     let l = 0;
     let r = l + 1;
     let duplicate = [];
 
-    while (r < arr.length) {
+    while (r < nums.length) {
 
-        if (arr[l] === arr[r]) {
+        if (nums[l] === nums[r]) {
 
-            duplicate.push(arr[r]);
+            duplicate.push(nums[r]);
         }
 
         r++;
 
-        if (r === arr.length || arr[l] === arr[l - 1]) {
+        if (r === nums.length || nums[l] === nums[l - 1]) {
             l++;
             r = l + 1;
         }
 
-        if (arr[l] === arr[l - 1]) {
+        if (nums[l] === nums[l - 1]) {
             l++;
             r = l + 1;
         }
@@ -46,7 +46,104 @@ function TwoSum(nums, target) {
 
     return [];
 }
-console.log(TwoSum([2, 7, 11, 15], 9));
-console.log(TwoSum([3, 2, 4], 6));
-console.log(TwoSum([3, 3], 6));
+// console.log(TwoSum([2, 7, 11, 15], 9));
+// console.log(TwoSum([3, 2, 4], 6));
+// console.log(TwoSum([3, 3], 6));
 
+function subArr(nums) {
+    let sum = 0;
+    let max = nums[0];
+    let l = 0;
+    let r = 1;
+
+    for (let i = 0; i < nums.length; i++) {
+        sum = nums[i];
+
+        if (sum > max) {
+            max = sum
+        }
+
+        for (let j = i + 1; j < nums.length; j++) {
+
+            sum += nums[j];
+
+            if (sum > max) {
+                max = sum;
+                l = i;
+                r = j + 1;
+            }
+        }
+    }
+    console.log(nums.slice(l, r));
+    return max;
+}
+// console.log(subArr([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
+// console.log(subArr([-1]));
+// console.log(subArr([1]));
+// console.log(subArr([5, 4, -1, 7, 8]));
+
+function subArrPointer(nums) {
+    let sum = nums[0];
+    let max = nums[0];
+    let maxArr = [];
+
+    let l = 0;
+    let r = l + 1;
+
+    while (r < nums.length) {
+
+        if (sum > max) {
+            max = sum
+        }
+
+        sum += nums[r];
+        if (sum > max) {
+            max = sum;
+            maxArr = nums.slice(l, r + 1);
+        }
+        if (r === nums.length - 1) {
+            l++;
+            r = l + 1;
+            sum = nums[l];
+        } else {
+            r++;
+        }
+    }
+    // console.log(maxArr)
+    return max;
+}
+// console.log(subArrPointer([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
+// console.log(subArr([-1]));
+// console.log(subArr([1]));
+// console.log(subArr([5, 4, -1, 7, 8]));
+// console.log(subArr([-2, 1]));
+
+function subArrKadane(nums) {
+    let current = nums[0];
+    let max = nums[0];
+
+    let l = 0;
+    let r = 0;
+
+    for (let i = 1; i < nums.length; i++) {
+
+        if (nums[i] > current + nums[i]) {
+            current = nums[i];
+            l = i;
+        } else {
+            current += nums[i];
+        }
+
+        if (current > max) {
+            max = current
+            r = i;
+        }
+    }
+    console.log(nums.slice(l, r + 1));
+    return max;
+}
+console.log(subArrKadane([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
+console.log(subArrKadane([-1]));
+console.log(subArrKadane([1]));
+console.log(subArrKadane([5, 4, -1, 7, 8]));
+console.log(subArrKadane([-2, 1]));

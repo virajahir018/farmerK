@@ -106,7 +106,13 @@ export const productSearch = async (search) => {
 
 export const productLocation = async (city) => {
 
-    const response = await API.post("/product/product-Location", {city});
+    const response = await API.post("/product/product-Location", { city });
+
+    return response;
+}
+
+export const addToCart = async () => {
+    const response = await API.post('/cart/add/:id');
 
     return response;
 }

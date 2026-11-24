@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { productId } from "../../api/userApi";
+import { addToCart, productId } from "../../api/userApi";
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -10,12 +10,15 @@ export default function ProductDetails() {
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(0);
 
+    const [quantity, setQuantity] = useState(1);
+
     const fetchData = async () => {
         try {
             setLoading(true);
 
             const response = await productId(id);
             setProduct(response.data.product);
+            // console.log(response.data.product);
             setSelectedImage(0);
 
         } catch (error) {
@@ -26,6 +29,15 @@ export default function ProductDetails() {
             setLoading(false);
         }
     };
+
+    const addCart = async () => {
+
+        try {
+            const response = await addToCart()
+        } catch (error) {
+            console.log(error?.response?.data);
+        }
+    }
 
     useEffect(() => {
         fetchData();
@@ -40,6 +52,8 @@ export default function ProductDetails() {
             </div>
         );
     }
+
+    console.log(quantity)
 
     if (!product) {
         return (
@@ -201,8 +215,34 @@ export default function ProductDetails() {
                             </p>
                         </div>
                     </div>
+                    <div className="flex rounded-2xl border border-gray-100 bg-white p-5">
+
+                        {/* Quantity */}
+                        <div>
+                            <label className="mb-2 block text-sm font-semibold text-gray-700">
+                                Quantity
+                            </label>
+
+                            <input
+                                onChange={(e) => setQuantity(e.target.value)}
+                                type="number"
+                                min="1"
+                                defaultValue="1"
+                                className="w-28 rounded-xl border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700 outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-100"
+                            />
+                        </div>
+
+                        {/* Add To Cart */}
+                        <button
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3.5 text-base font-bold text-white shadow-md transition-all duration-300 hover:bg-green-700 hover:shadow-lg active:scale-[0.98]"
+                        >
+                             Add To Cart
+                        </button>
+
+                    </div>
                 </div>
             </div>
+
         </div>
     );
 }
