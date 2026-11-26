@@ -33,10 +33,13 @@ export default function ProductDetails() {
     const addCart = async () => {
 
         try {
-            const response = await addToCart()
+            const response = await addToCart(id, quantity)
+            console.log("Cart : ", response.data)
         } catch (error) {
             console.log(error?.response?.data);
         }
+
+        console.log("Cart : ", id, quantity)
     }
 
     useEffect(() => {
@@ -52,8 +55,6 @@ export default function ProductDetails() {
             </div>
         );
     }
-
-    console.log(quantity)
 
     if (!product) {
         return (
@@ -215,10 +216,13 @@ export default function ProductDetails() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex rounded-2xl border border-gray-100 bg-white p-5">
+                </div>
+                {/* Cart Section */}
+                <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
 
-                        {/* Quantity */}
-                        <div>
+                    <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
+
+                        <div className="w-full sm:w-auto">
                             <label className="mb-2 block text-sm font-semibold text-gray-700">
                                 Quantity
                             </label>
@@ -228,18 +232,20 @@ export default function ProductDetails() {
                                 type="number"
                                 min="1"
                                 defaultValue="1"
-                                className="w-28 rounded-xl border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700 outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-100"
+                                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700 outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-100 sm:w-28"
                             />
                         </div>
 
-                        {/* Add To Cart */}
                         <button
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3.5 text-base font-bold text-white shadow-md transition-all duration-300 hover:bg-green-700 hover:shadow-lg active:scale-[0.98]"
+                            onClick={addCart}
+                            className="flex w-full flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3.5 text-base font-bold text-white shadow-md transition-all duration-300 hover:bg-green-700 hover:shadow-lg active:scale-[0.98]"
                         >
-                             Add To Cart
+                            <span>🛒</span>
+                            Add To Cart
                         </button>
 
                     </div>
+
                 </div>
             </div>
 

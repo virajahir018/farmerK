@@ -10,6 +10,7 @@ import Profile from '../components/profile/Profile'
 import LogOut from '../components/profile/LogOut'
 import ProductAdd from '../components/product/ProductAdd'
 import ProductDetails from '../components/product/ProductDetails'
+import Cart from '../components/product/Cart'
 
 export default function AppRoutes({ setIsLogin }) {
     return (
@@ -24,6 +25,7 @@ export default function AppRoutes({ setIsLogin }) {
             <Route path='/logout' element={<LogOut setIsLogin={setIsLogin} />} />
             <Route path='/product/:id' element={<ProductDetails />} />
             <Route path='/product-add' element={<ProductAdd />} />
+            <Route path='/product-cart' element={<Cart />} />
         </Routes>
     )
 }

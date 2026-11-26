@@ -111,8 +111,12 @@ export const productLocation = async (city) => {
     return response;
 }
 
-export const addToCart = async () => {
-    const response = await API.post('/cart/add/:id');
+export const addToCart = async (id, quantity) => {
+    const response = await API.post(`/cart/add/${id}`, { quantity });
+    return response;
+}
 
+export const getCart = async () => {
+    const response = await API.get("/cart/all");
     return response;
 }

@@ -12,6 +12,8 @@ cartRouter.post("/add/:id", Auth, async (req, res) => {
         const productId = req.params.id;
         let { quantity } = req.body;
 
+        quantity = Number(quantity);
+
         if (!quantity) {
             quantity = 1;
         }
@@ -55,12 +57,13 @@ cartRouter.post("/add/:id", Auth, async (req, res) => {
 
     } catch (error) {
         return res.status(500).json({
-            message: error.message
+            message: error.message,
+            message: console.log(error.message)
         })
     }
 })
 
-cartRouter.get("/get", Auth, async (req, res) => {
+cartRouter.get("/all", Auth, async (req, res) => {
     try {
 
         const userId = req.user;
@@ -115,7 +118,11 @@ cartRouter.get("/get", Auth, async (req, res) => {
 
         ])
 
-        res.json(cart)
+        res.json(
+            {
+                product: cart[0].items,
+                total: cart[0].totalPrice
+            })
 
     } catch (error) {
         return res.status(500).json({

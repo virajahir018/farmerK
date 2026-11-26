@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { FaBoxOpen, FaHome, FaSignInAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaBoxOpen, FaHome, FaSignInAlt, FaSignOutAlt, FaUser, FaShoppingCart } from "react-icons/fa";
 
 export default function Navbar({ isLogin }) {
     return (
@@ -23,6 +23,19 @@ export default function Navbar({ isLogin }) {
                 >
                     <FaHome className="text-lg" />
                     Home
+                </NavLink>
+
+                <NavLink
+                    to="/product-cart"
+                    className={({ isActive }) =>
+                        `flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition ${isActive
+                            ? "bg-white text-green-900 shadow-sm"
+                            : "text-green-50 hover:bg-white/10"
+                        }`
+                    }
+                >
+                    <FaShoppingCart className="text-lg" />
+                    Cart
                 </NavLink>
 
                 {isLogin ? (

@@ -142,8 +142,86 @@ function subArrKadane(nums) {
     console.log(nums.slice(l, r + 1));
     return max;
 }
-console.log(subArrKadane([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
-console.log(subArrKadane([-1]));
-console.log(subArrKadane([1]));
-console.log(subArrKadane([5, 4, -1, 7, 8]));
-console.log(subArrKadane([-2, 1]));
+// console.log(subArrKadane([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
+// console.log(subArrKadane([-1]));
+// console.log(subArrKadane([1]));
+// console.log(subArrKadane([5, 4, -1, 7, 8]));
+// console.log(subArrKadane([-2, 1]));
+
+function LongestSubstring(s) {
+    let left = 0;
+    let maxLength = 0;
+    let set = new Set();
+
+    for (let right = 0; right < s.length; right++) {
+
+        while (set.has(s[right])) {
+            set.delete(s[left]);
+            left++;
+        }
+
+        set.add(s[right]);
+
+        let windoLength = right - left + 1;
+
+        maxLength = Math.max(maxLength, windoLength);
+    }
+
+    return maxLength;
+}
+// console.log(LongestSubstring("abcabcbb"));
+
+function MinSizeSubSum(target, nums) {
+    let left = 0;
+    let sum = 0;
+    let minLength = Infinity;
+
+    for (let right = 0; right < nums.length; right++) {
+
+        sum += nums[right];
+
+        while (sum >= target) {
+            let windoLength = right - left + 1;
+
+            minLength = Math.min(minLength, windoLength);
+
+            sum -= nums[left];
+            left++;
+        }
+    }
+    return minLength === Infinity ? 0 : minLength;
+}
+// console.log(MinSizeSubSum(7, [2, 3, 1, 2, 4, 3]))
+// console.log(MinSizeSubSum(11, [1, 1, 1, 1, 1, 1, 1, 1]))
+
+function SubStriVowel(s, k) {
+
+    let left = 0;
+    let count = 0;
+
+    for (let i = 0; i < k; i++) {
+        if ("a,e,i,o,u".includes(s[i])) {
+            count++;
+        }
+    }
+
+    let maxCount = count;
+
+    for (let i = k; i < s.length; i++) {
+
+        if ("a,e,i,o,u".includes(s[left])) {
+            count--;
+        }
+
+        left++;
+
+        if ("a,e,i,o,u".includes(s[i])) {
+            count++;
+        }
+
+        maxCount = Math.max(count, maxCount);
+    }
+    return maxCount;
+}
+console.log(SubStriVowel("abciiidef", 3))
+console.log(SubStriVowel("a", 1))
