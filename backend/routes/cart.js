@@ -131,4 +131,36 @@ cartRouter.get("/all", Auth, async (req, res) => {
     }
 })
 
+cartRouter.post("/delete/:id", Auth, async (req, res) => {
+    try {
+        const { id } = req.params
+        // console.log(req.params)
+        // if (!id) {
+        //     return res.status(400).json({
+        //         message: "Please enter Id"
+        //     })
+        // }
+
+        const userCart = await Cart.findOneAndDelete(
+            { user: req.user },
+            {
+                $pull: {
+                    items: { product: id }
+                }
+            },
+            { new: true }
+        );
+
+        res.status(200).json({
+            message: "Product delete successful",
+            userCart
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+})
+
 module.exports = cartRouter;

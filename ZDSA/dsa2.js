@@ -223,5 +223,24 @@ function SubStriVowel(s, k) {
     }
     return maxCount;
 }
-console.log(SubStriVowel("abciiidef", 3))
-console.log(SubStriVowel("a", 1))
+// console.log(SubStriVowel("abciiidef", 3))
+// console.log(SubStriVowel("h", 1))
+
+function GroupAnagrams(strs) {
+
+    let map = new Map();
+
+    for (const i of strs) {
+
+        let key = i.split("").sort().join("");
+
+        if (!map.has(key)) {
+            map.set(key, []);
+        }
+
+        map.get(key).push(i);
+    }
+    return Array.from(map.values());
+
+}
+console.log(GroupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"]));

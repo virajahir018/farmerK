@@ -14,7 +14,7 @@ export default function Cart() {
         try {
             const response = await getCart();
 
-            console.log(response.data);
+            // console.log(response.data);
             setData(response.data);
 
         } catch (error) {
@@ -95,7 +95,7 @@ export default function Cart() {
                                             </p>
 
                                             <p className="mt-3 font-semibold text-green-700">
-                                                ₹{item.product.price} / unit
+                                                Product Price :  ₹{item.product.price}
                                             </p>
                                         </div>
 
@@ -106,7 +106,7 @@ export default function Cart() {
                                             </p>
 
                                             <p className="text-lg font-bold text-gray-800">
-                                                ₹{item.subtotal}
+                                                Total Price : ₹{item.subtotal}
                                             </p>
 
                                         </div>
